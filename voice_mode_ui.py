@@ -18,6 +18,7 @@ import audio
 import re
 import pickle
 import globle_key_listener
+import mic_to_output
 
 
 global mydir
@@ -34,8 +35,15 @@ global hotkeydict
 hotkeydict ={}
 global selectedoutdeviceindex
 selectedoutdeviceindex = [0]
+global selectedindeviceindex
+selectedindeviceindex = [0]
 
-
+class mictoout_thread(QtCore.QThread):
+    
+    def __init__(self, parent=None):
+        super(mictoout_thread,self).__init__(parent)
+    def run(self):
+        mic_to_output.startmictooutput(selectedindeviceindex[0],selectedoutdeviceindex[0])
 
 class gblkeylistener_thread(QtCore.QThread):
     
@@ -155,11 +163,22 @@ class Ui_voicemode(object):
             self.outputdevice.setCurrentIndex(selectedoutdeviceindex[0])
         except:
             pass
-        self.outputdevice.currentIndexChanged.connect(self.setdeviceindexfunc) 
+        self.outputdevice.currentIndexChanged.connect(self.setdeviceindexfunc)
+        try:
+            print(selectedindeviceindex[0])
+            self.inputdevice.setCurrentIndex(selectedindeviceindex[0])
+        except:
+            pass
+        self.inputdevice.currentIndexChanged.connect(self.setindeviceindexfunc)  
         self.retranslateUi(voicemode)
         self.tabWidget.setCurrentIndex(0)
         self.hotkeylistenercall()
+        self.mictooutputcall()
         QtCore.QMetaObject.connectSlotsByName(voicemode)
+
+    def mictooutputcall(self):
+        self.thread2 = mictoout_thread()
+        self.thread2.start()
 
     def hotkeylistenercall(self):
         self.thread1 = gblkeylistener_thread()
@@ -175,19 +194,23 @@ class Ui_voicemode(object):
             print("making regedit")
             self.settingval.setValue("audio path",userpath+"/Music")
             self.settingval.setValue("selectedoutdeviceindex",0)
+            self.settingval.setValue("selectedindeviceindex",0)
         
         elif len(settingkeylist)==0:
             print("set def val")
             self.settingval.setValue("audio path",userpath+"/Music")
             self.settingval.setValue("selectedoutdeviceindex",0)
+            self.settingval.setValue("selectedindeviceindex",0)
     def getsettingvals(self):
         self.settingval = QSettings("Dragon Voide Mode","settings vals")
         audiofiledir[0] = str(self.settingval.value("audio path"))
         selectedoutdeviceindex[0] = self.settingval.value("selectedoutdeviceindex")
+        selectedindeviceindex[0] = self.settingval.value("selectedindeviceindex")
 
     def setsettingvals(self):
         self.settingval = QSettings("Dragon Voide Mode","settings vals")
         self.settingval.setValue("selectedoutdeviceindex",selectedoutdeviceindex[0])
+        self.settingval.setValue("selectedindeviceindex",selectedindeviceindex[0])
 
     def getaudiofiledir(self):
         audiofiledir[0] = QtWidgets.QFileDialog.getExistingDirectory(None, 'audio folder path',mydir)
@@ -259,6 +282,11 @@ class Ui_voicemode(object):
         print(index)
         selectedoutdeviceindex[0] = index
         self.setsettingvals() 
+
+    def setindeviceindexfunc(self,index):
+        print(index)
+        selectedindeviceindex[0] = index
+        self.setsettingvals()
 
     def asinghk_clk(self):
         hkstr = self.lineEdit.text()
