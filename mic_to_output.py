@@ -1,10 +1,9 @@
 import argparse
-
+import time
 import sounddevice as sd
 import numpy  # Make sure NumPy is loaded before it is used in the callback
 assert numpy  # avoid "imported but unused" message (W0611)
 
-print(sd.query_devices())
 
 def startmictooutput(inputdeviceindex,outputdeviceindex):
     def int_or_str(text):
@@ -49,7 +48,8 @@ def startmictooutput(inputdeviceindex,outputdeviceindex):
         outdata[:] = indata
 
 
-
+    print("mic input stated")
+    print(str(inputdeviceindex)+str(outputdeviceindex))
     with sd.Stream(device=(inputdeviceindex, outputdeviceindex),
                     samplerate=args.samplerate, blocksize=args.blocksize,
                     dtype=args.dtype, latency=args.latency,
@@ -57,4 +57,6 @@ def startmictooutput(inputdeviceindex,outputdeviceindex):
         '''print('#' * 80)
         print('press Return to quit')
         print('#' * 80)'''
-        #input()    
+        #input()
+        while sd.Stream.active:
+                time.sleep(0.02)    
