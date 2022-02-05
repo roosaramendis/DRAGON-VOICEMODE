@@ -1,5 +1,5 @@
 from pynput.keyboard import Key, Listener
-import pynput
+#import pynput
 import audio
 import voice_mode_ui
 import re

@@ -1,10 +1,10 @@
-from gc import callbacks
+#from gc import callbacks
 import pyaudio
 import sounddevice as sd
 import wave
 import sys
-from global_hotkeys import *
-import keyboard
+#from global_hotkeys import *
+#import keyboard
 import time
 import globle_key_listener
 #from pydub import AudioSegment
