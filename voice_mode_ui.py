@@ -29,6 +29,10 @@ global userpath
 userpath =os.path.expanduser('~')
 global selectedaudios
 selectedaudios = []
+global deviceslistin
+deviceslistin =[]
+global deviceslistout
+deviceslistout =[]
 global deviceslist
 deviceslist =[]
 global hotkeydict
@@ -37,6 +41,8 @@ global selectedoutdeviceindex
 selectedoutdeviceindex = [0]
 global selectedindeviceindex
 selectedindeviceindex = [0]
+global modifirekeyslist
+modifirekeyslist = ['Key.alt_l','Key.alt_gr']
 
 class mictoout_thread(QtCore.QThread):
     
@@ -45,7 +51,10 @@ class mictoout_thread(QtCore.QThread):
         self.selectedinputd = selectedinputdevice
         self.selectedoutputd =selectedoutputdevice
     def run(self):
-        mic_to_output.startmictooutput(self.selectedinputd,self.selectedoutputd)
+        try:
+            mic_to_output.startmictooutput(self.selectedinputd,self.selectedoutputd)
+        except:
+            print("print err")    
 
 class gblkeylistener_thread(QtCore.QThread):
     
@@ -165,13 +174,13 @@ class Ui_voicemode(object):
             self.outputdevice.setCurrentIndex(selectedoutdeviceindex[0])
         except:
             pass
-        self.outputdevice.currentIndexChanged.connect(self.setdeviceindexfunc)
+        self.outputdevice.currentTextChanged.connect(self.setdeviceindexfunc)
         try:
             print(selectedindeviceindex[0])
             self.inputdevice.setCurrentIndex(selectedindeviceindex[0])
         except:
             pass
-        self.inputdevice.currentIndexChanged.connect(self.setindeviceindexfunc)  
+        self.inputdevice.currentTextChanged.connect(self.setindeviceindexfunc)  
         self.retranslateUi(voicemode)
         self.tabWidget.setCurrentIndex(0)
         self.hotkeylistenercall()
@@ -180,7 +189,7 @@ class Ui_voicemode(object):
         QtCore.QMetaObject.connectSlotsByName(voicemode)
 
     def hearituself(self):
-        self.thread3 = mictoout_thread(selectedinputdevice=1,selectedoutputdevice=6)
+        self.thread3 = mictoout_thread(selectedinputdevice=deviceslist.index(sd.query_devices(kind='input')['name']),selectedoutputdevice=deviceslist.index(sd.query_devices(kind='output')['name']))
         self.thread3.start()
 
     def mictooutputcall(self):
@@ -261,10 +270,29 @@ class Ui_voicemode(object):
         print("gettting audio devices")
         p = pyaudio.PyAudio()
         #deviceslist = []
-        for i in range(p.get_device_count()):
-            deviceslist.append(p.get_device_info_by_index(i).get('name'))
-        self.inputdevice.addItems(deviceslist)
-        self.outputdevice.addItems(deviceslist)
+        deviceslist.clear()
+        for i in sd.query_devices():
+            deviceslist.append(i['name'])
+        #print(sd.query_devices(kind='input'))
+        for i in range(len(deviceslist)):
+            try:
+                if sd.query_devices(i,'input')['max_input_channels']>0:
+                    #print(sd.query_devices(i,'input')['name'])
+                    deviceslistin.append(sd.query_devices(i,'input')['name'])
+            except:
+                pass
+        print(deviceslistin)        
+        for i in range(len(deviceslist)):
+                
+            try:
+                if sd.query_devices(i,'output')['max_output_channels']>0:
+                    #print(sd.query_devices(i,'output')['name'])
+                    deviceslistout.append(sd.query_devices(i,'output')['name'])
+            except:
+                pass    
+        print(deviceslistout)            
+        self.inputdevice.addItems(deviceslistin)
+        self.outputdevice.addItems(deviceslistout)
 
     def play_clk(self):
         self.getcheckditems(model)
@@ -285,20 +313,29 @@ class Ui_voicemode(object):
                 #selectedvideos.append(item.text()    
         print(selectedaudios)
     
-    def setdeviceindexfunc(self,index):
-        print(index)
-        selectedoutdeviceindex[0] = index
+    def setdeviceindexfunc(self,text):
+        print(text)
+        dindex = selectedoutdeviceindex[0]
+        if text in deviceslist:
+            dindex = deviceslist.index(text)
+            print("index of text"+str(dindex))
+        selectedoutdeviceindex[0] = dindex
         self.setsettingvals() 
 
-    def setindeviceindexfunc(self,index):
-        print(index)
-        selectedindeviceindex[0] = index
+    def setindeviceindexfunc(self,text):
+        print(str(type(deviceslist)))
+        dindex = selectedindeviceindex[0]
+        if text in deviceslist:
+            dindex = deviceslist.index(text)
+            print("index of text"+str(dindex))
+        selectedindeviceindex[0] = dindex
+        
         self.setsettingvals()
 
     def asinghk_clk(self):
         hkstr = self.lineEdit.text()
         print(hkstr)
-        newhklist =[self.comboBox.currentText(),hkstr]
+        newhklist =[modifirekeyslist[self.comboBox.currentIndex()],hkstr]
         print(newhklist)
         newhk = newhklist[0]+"+"+newhklist[1]
         self.getcheckditems(model)
@@ -320,8 +357,8 @@ class Ui_voicemode(object):
         _translate = QtCore.QCoreApplication.translate
         voicemode.setWindowTitle(_translate("voicemode", "DRAGON VOICE MODE"))
         self.asinghk.setText(_translate("voicemode", "Add Hot Key"))
-        self.comboBox.setItemText(0, _translate("voicemode", "Key.alt_gr"))
-        self.comboBox.setItemText(1, _translate("voicemode", "Key.alt_l"))
+        self.comboBox.setItemText(1, _translate("voicemode", "alt_r"))
+        self.comboBox.setItemText(0, _translate("voicemode", "alt_l"))
         self.label.setText(_translate("voicemode", "+"))
         self.removehk.setText(_translate("voicemode", "Remove Hot Key"))
         self.repeat.setText(_translate("voicemode", "repeat"))
