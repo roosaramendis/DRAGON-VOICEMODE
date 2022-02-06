@@ -47,7 +47,7 @@ def startmictooutput(inputdeviceindex,outputdeviceindex):
             print(status)
         outdata[:] = indata
 
-
+    
     print("mic input stated")
     print(str(inputdeviceindex)+str(outputdeviceindex))
     with sd.Stream(device=(inputdeviceindex, outputdeviceindex),

@@ -60,9 +60,9 @@ def starlistener(hotkeydict,selecteddiviceinderx):
                 currentkey.clear()
             except:
                 pass
-        if key == Key.esc:
+        """if key == Key.esc:
             # Stop listener
-            return False
+            return False"""
 
     # Collect events until released
     print(str(hotkeydict))

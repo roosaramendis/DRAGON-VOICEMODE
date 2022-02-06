@@ -1,15 +1,11 @@
-#from gc import callbacks
+
 import pyaudio
 import sounddevice as sd
 import wave
 import sys
-#from global_hotkeys import *
-#import keyboard
 import time
 import globle_key_listener
-#from pydub import AudioSegment
-#filename = "C:\Users\mendis\Music\life line mf.mp3"
-#song = AudioSegment.from_mp3("C:\Users\mendis\Music\life line mf.mp3")
+
 
 
 def playaudio(filename,deviceindex,chunksize):
@@ -44,9 +40,7 @@ def playaudio(filename,deviceindex,chunksize):
     stream.start_stream()
     while stream.is_active():
         time.sleep(0.1)
-    '''while data != '':
-        stream.write(data)
-        data = file.readframes(chunk)'''
+
     
     # Stop, Close and terminate the stream
     stream.stop_stream()
