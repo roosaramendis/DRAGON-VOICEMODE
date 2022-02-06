@@ -40,10 +40,12 @@ selectedindeviceindex = [0]
 
 class mictoout_thread(QtCore.QThread):
     
-    def __init__(self, parent=None):
+    def __init__(self,selectedinputdevice,selectedoutputdevice, parent=None):
         super(mictoout_thread,self).__init__(parent)
+        self.selectedinputd = selectedinputdevice
+        self.selectedoutputd =selectedoutputdevice
     def run(self):
-        mic_to_output.startmictooutput(selectedindeviceindex[0],selectedoutdeviceindex[0])
+        mic_to_output.startmictooutput(self.selectedinputd,self.selectedoutputd)
 
 class gblkeylistener_thread(QtCore.QThread):
     
@@ -174,10 +176,15 @@ class Ui_voicemode(object):
         self.tabWidget.setCurrentIndex(0)
         self.hotkeylistenercall()
         self.mictooutputcall()
+        self.hearituself()
         QtCore.QMetaObject.connectSlotsByName(voicemode)
 
+    def hearituself(self):
+        self.thread3 = mictoout_thread(selectedinputdevice=1,selectedoutputdevice=6)
+        self.thread3.start()
+
     def mictooutputcall(self):
-        self.thread2 = mictoout_thread()
+        self.thread2 = mictoout_thread(selectedinputdevice=selectedindeviceindex[0],selectedoutputdevice=selectedoutdeviceindex[0])
         self.thread2.start()
 
     def hotkeylistenercall(self):
