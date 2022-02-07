@@ -55,6 +55,8 @@ global overridehearuselfdevice
 overridehearuselfdevice = [0]
 global hearmyselfdevice
 hearmyselfdevice = ['']
+global hearmyselfvolume
+hearmyselfvolume = [1]
 
 def setisaudioplaying(isplaying):
     isaudioplaying.clear()
@@ -65,12 +67,15 @@ def getstopstreaminmicintoout():
     print(stopstreaminmicintoout[0])
     return stopstreaminmicintoout[0]
 
+
+
 class hearituself_thread(QtCore.QThread):
     suicidefunc = QtCore.pyqtSignal(str)
-    def __init__(self,selectedinputdevice,selectedoutputdevice, parent=None):
+    def __init__(self,selectedinputdevice,selectedoutputdevice,volume, parent=None):
         super(hearituself_thread,self).__init__(parent)
         self.selectedinputd = selectedinputdevice
         self.selectedoutputd =selectedoutputdevice
+        self.volume =volume
     def run(self):
         
         while True:
@@ -82,7 +87,7 @@ class hearituself_thread(QtCore.QThread):
                 print("hearit u self started") 
                 if hearituselfcalledtimes[0] <2: 
                     try:
-                        mic_to_output.startmictooutputcall(self.selectedinputd,self.selectedoutputd)
+                        mic_to_output.startmictooutputcall(self.selectedinputd,self.selectedoutputd,self.volume/100)
                     except:
                         print("print err") 
             else:            
@@ -166,7 +171,7 @@ class Ui_voicemode(object):
         self.tab_2.setObjectName("tab_2")
         self.horizontalSlider = QtWidgets.QSlider(self.tab_2)
         self.horizontalSlider.setGeometry(QtCore.QRect(10, 30, 451, 22))
-        self.horizontalSlider.setMaximum(4096)
+        self.horizontalSlider.setMaximum(200)
         self.horizontalSlider.setOrientation(QtCore.Qt.Horizontal)
         self.horizontalSlider.setObjectName("horizontalSlider")
         self.sampelrate = QtWidgets.QLabel(self.tab_2)
@@ -248,6 +253,12 @@ class Ui_voicemode(object):
             self.hearmyselfdevice.setCurrentText(hearmyselfdevice[0])
         except:
             pass
+        try:
+            self.horizontalSlider.setValue(hearmyselfvolume[0])
+        except:
+            pass
+        self.horizontalSlider.valueChanged.connect(self.sethearmyselfvolumeval)
+        self.sampelrate.setText('hear my self volume '+str(self.horizontalSlider.value()))    
         self.hearmyselfdevice.currentTextChanged.connect(self.sethearmyselfdeviceval)   
         self.inputdevice.currentTextChanged.connect(self.setindeviceindexfunc)  
         self.retranslateUi(voicemode)
@@ -260,9 +271,9 @@ class Ui_voicemode(object):
 
     def hearituself(self):
         if overridehearuselfdevice[0] == 2:
-            self.thread3 = hearituself_thread(selectedinputdevice=deviceslist.index(sd.query_devices(kind='input')['name']),selectedoutputdevice=deviceslist.index(hearmyselfdevice[0]))
+            self.thread3 = hearituself_thread(selectedinputdevice=deviceslist.index(sd.query_devices(kind='input')['name']),selectedoutputdevice=deviceslist.index(hearmyselfdevice[0]),volume=self.horizontalSlider.value())
         if overridehearuselfdevice[0] == 0:
-            self.thread3 = hearituself_thread(selectedinputdevice=deviceslist.index(sd.query_devices(kind='input')['name']),selectedoutputdevice=deviceslist.index(sd.query_devices(kind='output')['name']))    
+            self.thread3 = hearituself_thread(selectedinputdevice=deviceslist.index(sd.query_devices(kind='input')['name']),selectedoutputdevice=deviceslist.index(sd.query_devices(kind='output')['name']),volume=self.horizontalSlider.value())    
         self.thread3.start()
         self.thread3.suicidefunc.connect(self.stophearituself)
 
@@ -294,6 +305,7 @@ class Ui_voicemode(object):
             self.settingval.setValue("selectedindeviceindex",0)
             self.settingval.setValue("overridehearuselfdevice",0)
             self.settingval.setValue("hearmyselfdevice",0)
+            self.settingval.setValue("hearmyselfvolume",100)
         
         elif len(settingkeylist)==0:
             print("set def val")
@@ -302,6 +314,7 @@ class Ui_voicemode(object):
             self.settingval.setValue("selectedindeviceindex",0)
             self.settingval.setValue("overridehearuselfdevice",0)
             self.settingval.setValue("hearmyselfdevice",0)
+            self.settingval.setValue("hearmyselfvolume",100)
 
     def getsettingvals(self):
         self.settingval = QSettings("Dragon Voide Mode","settings vals")
@@ -310,6 +323,7 @@ class Ui_voicemode(object):
         selectedindeviceindex[0] = self.settingval.value("selectedindeviceindex")
         overridehearuselfdevice[0] = self.settingval.value("overridehearuselfdevice")
         hearmyselfdevice[0] = self.settingval.value("hearmyselfdevice")
+        hearmyselfvolume[0] = self.settingval.value("hearmyselfvolume")
 
 
     def setsettingvals(self):
@@ -452,6 +466,10 @@ class Ui_voicemode(object):
         print(text)
         self.settingval.setValue("hearmyselfdevice",text)
 
+    def sethearmyselfvolumeval(self):
+        self.settingval.setValue("hearmyselfvolume",self.horizontalSlider.value())
+        self.sampelrate.setText('hear my self volume '+str(self.horizontalSlider.value()))
+
     def retranslateUi(self, voicemode):
         _translate = QtCore.QCoreApplication.translate
         voicemode.setWindowTitle(_translate("voicemode", "DRAGON VOICE MODE"))
@@ -462,7 +480,7 @@ class Ui_voicemode(object):
         self.removehk.setText(_translate("voicemode", "Remove Hot Key"))
         self.repeat.setText(_translate("voicemode", "repeat"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.soundboard), _translate("voicemode", "Sound Board"))
-        self.sampelrate.setText(_translate("voicemode", "sample rate"))
+        self.sampelrate.setText(_translate("voicemode", "hear my self volume"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("voicemode", "Tab 2"))
         self.about.setTitle(_translate("voicemode", "about"))
         self.openaudiopath.setText(_translate("voicemode", u"open audio files dir", None))

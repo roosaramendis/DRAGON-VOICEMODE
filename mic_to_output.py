@@ -10,7 +10,7 @@ import audio
 
 
 
-def startmictooutputforhearaudio(inputdeviceindex,outputdeviceindex):
+def startmictooutputforhearaudio(inputdeviceindex,outputdeviceindex,volume):
     def int_or_str(text):
         """Helper function for argument parsing."""
         try:
@@ -50,10 +50,11 @@ def startmictooutputforhearaudio(inputdeviceindex,outputdeviceindex):
     def callback(indata, outdata, frames, time, status):
         if status:
             print(status)
-        outdata[:] = indata
+        outdata[:] = (indata) * volume#indata
 
     
     print("mic input stated")
+    print(volume)
     print(str(inputdeviceindex)+str(outputdeviceindex))
     with sd.Stream(device=(inputdeviceindex, outputdeviceindex),
                     samplerate=args.samplerate, blocksize=args.blocksize,
@@ -133,7 +134,7 @@ def stopmictoinput():
     parser.exit('exit')'''
     
 
-def startmictooutputcall(inputdeviceindex,outputdeviceindex):
-    t1 = threading.Thread(target=startmictooutputforhearaudio,args=(inputdeviceindex,outputdeviceindex))
+def startmictooutputcall(inputdeviceindex,outputdeviceindex,volume):
+    t1 = threading.Thread(target=startmictooutputforhearaudio,args=(inputdeviceindex,outputdeviceindex,volume))
     t1.start()
 

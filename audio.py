@@ -7,6 +7,10 @@ import sys
 import time
 import globle_key_listener
 import voice_mode_ui
+import argparse
+import threading
+
+
 
 global isaudioplaying
 isaudioplaying = [False]
@@ -62,4 +66,5 @@ def playaudio(filename,deviceindex,chunksize):
     globle_key_listener.itwasdone(True)
 
 
-# Flag to indicate the program whether should continue running.
+
+
