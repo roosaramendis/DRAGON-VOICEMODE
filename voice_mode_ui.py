@@ -51,7 +51,10 @@ global hearituselfcalledtimes
 hearituselfcalledtimes = [0]
 global stopstreaminmicintoout
 stopstreaminmicintoout  = [False]
-
+global overridehearuselfdevice
+overridehearuselfdevice = [0]
+global hearmyselfdevice
+hearmyselfdevice = ['']
 
 def setisaudioplaying(isplaying):
     isaudioplaying.clear()
@@ -201,6 +204,15 @@ class Ui_voicemode(object):
         self.outputdevice = QtWidgets.QComboBox(self.centralwidget)
         self.outputdevice.setObjectName(u"outputdevice")
         self.outputdevice.setGeometry(QtCore.QRect(370, 470, 261, 22))
+        self.label_5 = QtWidgets.QLabel(self.tab_2)
+        self.label_5.setObjectName(u"label_5")
+        self.label_5.setGeometry(QtCore.QRect(10, 140, 261, 21))
+        self.hearmyselfdevice = QtWidgets.QComboBox(self.tab_2)
+        self.hearmyselfdevice.setObjectName(u"hearmyselfdevice")
+        self.hearmyselfdevice.setGeometry(QtCore.QRect(290, 140, 321, 22))
+        self.overridehearuselfdevice = QtWidgets.QCheckBox(self.tab_2)
+        self.overridehearuselfdevice.setObjectName(u"overridehearuselfdevice")
+        self.overridehearuselfdevice.setGeometry(QtCore.QRect(10, 110, 191, 17))
            
         self.play = QtWidgets.QPushButton(self.soundboard)
         self.play.setObjectName(u"play")
@@ -224,6 +236,19 @@ class Ui_voicemode(object):
             self.inputdevice.setCurrentText(deviceslist[selectedindeviceindex[0]])
         except:
             pass
+        try:
+            if overridehearuselfdevice[0] == 0:
+                self.overridehearuselfdevice.setChecked(False)
+            elif overridehearuselfdevice[0] == 2:
+                self.overridehearuselfdevice.setChecked(True)
+        except:
+            pass
+        self.overridehearuselfdevice.stateChanged.connect(self.setoverridehearuselfval)        
+        try:
+            self.hearmyselfdevice.setCurrentText(hearmyselfdevice[0])
+        except:
+            pass
+        self.hearmyselfdevice.currentTextChanged.connect(self.sethearmyselfdeviceval)   
         self.inputdevice.currentTextChanged.connect(self.setindeviceindexfunc)  
         self.retranslateUi(voicemode)
         self.tabWidget.setCurrentIndex(0)
@@ -234,7 +259,10 @@ class Ui_voicemode(object):
 
 
     def hearituself(self):
-        self.thread3 = hearituself_thread(selectedinputdevice=deviceslist.index(sd.query_devices(kind='input')['name']),selectedoutputdevice=deviceslist.index(sd.query_devices(kind='output')['name']))
+        if overridehearuselfdevice[0] == 2:
+            self.thread3 = hearituself_thread(selectedinputdevice=deviceslist.index(sd.query_devices(kind='input')['name']),selectedoutputdevice=deviceslist.index(hearmyselfdevice[0]))
+        if overridehearuselfdevice[0] == 0:
+            self.thread3 = hearituself_thread(selectedinputdevice=deviceslist.index(sd.query_devices(kind='input')['name']),selectedoutputdevice=deviceslist.index(sd.query_devices(kind='output')['name']))    
         self.thread3.start()
         self.thread3.suicidefunc.connect(self.stophearituself)
 
@@ -264,17 +292,25 @@ class Ui_voicemode(object):
             self.settingval.setValue("audio path",userpath+"/Music")
             self.settingval.setValue("selectedoutdeviceindex",0)
             self.settingval.setValue("selectedindeviceindex",0)
+            self.settingval.setValue("overridehearuselfdevice",0)
+            self.settingval.setValue("hearmyselfdevice",0)
         
         elif len(settingkeylist)==0:
             print("set def val")
             self.settingval.setValue("audio path",userpath+"/Music")
             self.settingval.setValue("selectedoutdeviceindex",0)
             self.settingval.setValue("selectedindeviceindex",0)
+            self.settingval.setValue("overridehearuselfdevice",0)
+            self.settingval.setValue("hearmyselfdevice",0)
+
     def getsettingvals(self):
         self.settingval = QSettings("Dragon Voide Mode","settings vals")
         audiofiledir[0] = str(self.settingval.value("audio path"))
         selectedoutdeviceindex[0] = self.settingval.value("selectedoutdeviceindex")
         selectedindeviceindex[0] = self.settingval.value("selectedindeviceindex")
+        overridehearuselfdevice[0] = self.settingval.value("overridehearuselfdevice")
+        hearmyselfdevice[0] = self.settingval.value("hearmyselfdevice")
+
 
     def setsettingvals(self):
         self.settingval = QSettings("Dragon Voide Mode","settings vals")
@@ -327,6 +363,7 @@ class Ui_voicemode(object):
         for i in sd.query_devices():
             deviceslist.append(i['name'])
         #print(sd.query_devices(kind='input'))
+        self.hearmyselfdevice.addItems(deviceslist)
         for i in range(len(deviceslist)):
             try:
                 if sd.query_devices(i,'input')['max_input_channels']>0:
@@ -406,6 +443,15 @@ class Ui_voicemode(object):
             pickle.dump((hotkeydict),open(path+"/hotkeys"+".dvm","wb"))
             print("saving to "+str(path))
 
+    def setoverridehearuselfval(self,bval):
+
+        print(bval)
+        self.settingval.setValue("overridehearuselfdevice",bval)
+
+    def sethearmyselfdeviceval(self,text):
+        print(text)
+        self.settingval.setValue("hearmyselfdevice",text)
+
     def retranslateUi(self, voicemode):
         _translate = QtCore.QCoreApplication.translate
         voicemode.setWindowTitle(_translate("voicemode", "DRAGON VOICE MODE"))
@@ -425,6 +471,8 @@ class Ui_voicemode(object):
         self.stop.setText(_translate("voicemode", u"stop", None))
         self.label_3.setText(_translate("voicemode", u"input", None))
         self.label_4.setText(_translate("voicemode", u"output", None))
+        self.label_5.setText(_translate("voicemode", u"select device to hear your self", None))
+        self.overridehearuselfdevice.setText(_translate("voicemode", u"override hear your self device", None))
         #self.label_2.setText(_translate("voicemode", u"TextLabel", None))
 
 if __name__ == "__main__":
