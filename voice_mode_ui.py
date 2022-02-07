@@ -72,7 +72,7 @@ class hearituself_thread(QtCore.QThread):
         
         while True:
             time.sleep(0.5)
-            print(str(audio.getisaudioplaying())+" in while")
+            #print(str(audio.getisaudioplaying())+" in while")
             if audio.getisaudioplaying() == True:
                 
                 hearituselfcalledtimes[0] += 1
@@ -84,7 +84,7 @@ class hearituself_thread(QtCore.QThread):
                         print("print err") 
             else:            
                 hearituselfcalledtimes[0] = 0
-                print(str(hearituselfcalledtimes[0])+"hearituself called times")
+                #print(str(hearituselfcalledtimes[0])+"hearituself called times")
                 stopstreaminmicintoout[0] = True
                 mic_to_output.stopmictoinput()
                 #self.suicidefunc.emit("terminate")
@@ -215,13 +215,13 @@ class Ui_voicemode(object):
         
         try:
             print(selectedoutdeviceindex[0])
-            self.outputdevice.setCurrentIndex(selectedoutdeviceindex[0])
+            self.outputdevice.setCurrentText(deviceslist[selectedoutdeviceindex[0]])
         except:
             pass
         self.outputdevice.currentTextChanged.connect(self.setdeviceindexfunc)
         try:
             print(selectedindeviceindex[0])
-            self.inputdevice.setCurrentIndex(selectedindeviceindex[0])
+            self.inputdevice.setCurrentText(deviceslist[selectedindeviceindex[0]])
         except:
             pass
         self.inputdevice.currentTextChanged.connect(self.setindeviceindexfunc)  

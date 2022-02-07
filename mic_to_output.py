@@ -127,7 +127,8 @@ def startmictooutput(inputdeviceindex,outputdeviceindex):
                
 
 def stopmictoinput():
-    print('stoping'+str(sd.Stream.active))
+    pass
+    #print('stoping'+str(sd.Stream.active))
     '''parser = argparse.ArgumentParser(add_help=False)
     parser.exit('exit')'''
     

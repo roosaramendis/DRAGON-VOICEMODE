@@ -12,7 +12,7 @@ global isaudioplaying
 isaudioplaying = [False]
 
 def getisaudioplaying():
-    print(isaudioplaying[0])
+    #print(isaudioplaying[0])
     return isaudioplaying[0]
 
 def playaudio(filename,deviceindex,chunksize):
