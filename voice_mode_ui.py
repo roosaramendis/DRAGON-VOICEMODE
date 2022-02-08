@@ -39,10 +39,10 @@ global deviceslist
 deviceslist =[]
 global hotkeydict
 hotkeydict ={}
-global selectedoutdeviceindex
-selectedoutdeviceindex = [0]
-global selectedindeviceindex
-selectedindeviceindex = [0]
+global selectedoutputdevicetext
+selectedoutputdevicetext = ['']
+global selectedinputdevicetext
+selectedinputdevicetext = ['']
 global modifirekeyslist
 modifirekeyslist = ['Key.alt_l','Key.alt_gr']
 global isaudioplaying
@@ -113,8 +113,10 @@ class gblkeylistener_thread(QtCore.QThread):
     def __init__(self, parent=None):
         super(gblkeylistener_thread,self).__init__(parent)
     def run(self):
-        globle_key_listener.starlistener(hotkeydict,selectedoutdeviceindex[0])
-
+        try:
+            globle_key_listener.starlistener(hotkeydict,deviceslist.index(selectedoutputdevicetext[0]))
+        except:
+            pass
 class Ui_voicemode(object):
     def setupUi(self, voicemode):
         voicemode.setObjectName("voicemode")
@@ -122,7 +124,7 @@ class Ui_voicemode(object):
         self.makesettingvals()        
         self.setdefsettingvals()
         self.getsettingvals()
-        print(selectedoutdeviceindex[0])
+        print(selectedoutputdevicetext[0])
         try:
             datainfile = pickle.load(open(mydir+"/"+"saves/hotkeys.dvm","rb")) #read data in file
             print(datainfile)
@@ -231,14 +233,14 @@ class Ui_voicemode(object):
         self.getaudiodevices()
         
         try:
-            print(selectedoutdeviceindex[0])
-            self.outputdevice.setCurrentText(deviceslist[selectedoutdeviceindex[0]])
+            print(selectedoutputdevicetext[0])
+            self.outputdevice.setCurrentText(selectedoutputdevicetext[0])
         except:
             pass
         self.outputdevice.currentTextChanged.connect(self.setdeviceindexfunc)
         try:
-            print(selectedindeviceindex[0])
-            self.inputdevice.setCurrentText(deviceslist[selectedindeviceindex[0]])
+            print(selectedinputdevicetext[0])
+            self.inputdevice.setCurrentText(selectedinputdevicetext[0])
         except:
             pass
         try:
@@ -285,8 +287,11 @@ class Ui_voicemode(object):
         #self.hearituself()
 
     def mictooutputcall(self):
-        self.thread2 = mictoout_thread(selectedinputdevice=selectedindeviceindex[0],selectedoutputdevice=selectedoutdeviceindex[0])
-        self.thread2.start()
+        try:
+            self.thread2 = mictoout_thread(selectedinputdevice=deviceslist.index(selectedinputdevicetext[0]),selectedoutputdevice=deviceslist.index(selectedoutputdevicetext[0]))
+            self.thread2.start()
+        except:
+            pass
 
     def hotkeylistenercall(self):
         self.thread1 = gblkeylistener_thread()
@@ -301,8 +306,8 @@ class Ui_voicemode(object):
         if(settingkeylist == None):
             print("making regedit")
             self.settingval.setValue("audio path",userpath+"/Music")
-            self.settingval.setValue("selectedoutdeviceindex",0)
-            self.settingval.setValue("selectedindeviceindex",0)
+            self.settingval.setValue("selectedoutputdevicetext",0)
+            self.settingval.setValue("selectedinputdevicetext",0)
             self.settingval.setValue("overridehearuselfdevice",0)
             self.settingval.setValue("hearmyselfdevice",0)
             self.settingval.setValue("hearmyselfvolume",100)
@@ -310,8 +315,8 @@ class Ui_voicemode(object):
         elif len(settingkeylist)==0:
             print("set def val")
             self.settingval.setValue("audio path",userpath+"/Music")
-            self.settingval.setValue("selectedoutdeviceindex",0)
-            self.settingval.setValue("selectedindeviceindex",0)
+            self.settingval.setValue("selectedoutputdevicetext",0)
+            self.settingval.setValue("selectedinputdevicetext",0)
             self.settingval.setValue("overridehearuselfdevice",0)
             self.settingval.setValue("hearmyselfdevice",0)
             self.settingval.setValue("hearmyselfvolume",100)
@@ -319,8 +324,8 @@ class Ui_voicemode(object):
     def getsettingvals(self):
         self.settingval = QSettings("Dragon Voide Mode","settings vals")
         audiofiledir[0] = str(self.settingval.value("audio path"))
-        selectedoutdeviceindex[0] = self.settingval.value("selectedoutdeviceindex")
-        selectedindeviceindex[0] = self.settingval.value("selectedindeviceindex")
+        selectedoutputdevicetext[0] = self.settingval.value("selectedoutputdevicetext")
+        selectedinputdevicetext[0] = self.settingval.value("selectedinputdevicetext")
         overridehearuselfdevice[0] = self.settingval.value("overridehearuselfdevice")
         hearmyselfdevice[0] = self.settingval.value("hearmyselfdevice")
         hearmyselfvolume[0] = self.settingval.value("hearmyselfvolume")
@@ -328,8 +333,8 @@ class Ui_voicemode(object):
 
     def setsettingvals(self):
         self.settingval = QSettings("Dragon Voide Mode","settings vals")
-        self.settingval.setValue("selectedoutdeviceindex",selectedoutdeviceindex[0])
-        self.settingval.setValue("selectedindeviceindex",selectedindeviceindex[0])
+        self.settingval.setValue("selectedoutputdevicetext",selectedoutputdevicetext[0])
+        self.settingval.setValue("selectedinputdevicetext",selectedinputdevicetext[0])
 
     def getaudiofiledir(self):
         audiofiledir[0] = QtWidgets.QFileDialog.getExistingDirectory(None, 'audio folder path',mydir)
@@ -419,20 +424,20 @@ class Ui_voicemode(object):
     
     def setdeviceindexfunc(self,text):
         print(text)
-        dindex = selectedoutdeviceindex[0]
+        dtext = selectedoutputdevicetext[0]
         if text in deviceslist:
-            dindex = deviceslist.index(text)
-            print("index of text"+str(dindex))
-        selectedoutdeviceindex[0] = dindex
+            dtext = text
+            print("index of text"+str(dtext))
+        selectedoutputdevicetext[0] = dtext
         self.setsettingvals() 
 
     def setindeviceindexfunc(self,text):
         print(str(type(deviceslist)))
-        dindex = selectedindeviceindex[0]
+        dtext = selectedinputdevicetext[0]
         if text in deviceslist:
-            dindex = deviceslist.index(text)
-            print("index of text"+str(dindex))
-        selectedindeviceindex[0] = dindex
+            dtext = text
+            print("index of text"+str(dtext))
+        selectedinputdevicetext[0] = dtext
         
         self.setsettingvals()
 
