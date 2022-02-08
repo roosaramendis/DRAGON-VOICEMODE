@@ -68,6 +68,14 @@ def getstopstreaminmicintoout():
     return stopstreaminmicintoout[0]
 
 
+class playaudio_thread(QtCore.QThread):
+    
+    def __init__(self,selecetedfilepath,deviceindex, parent=None):
+        super(playaudio_thread,self).__init__(parent)
+        self.selecetedfilepath = selecetedfilepath
+        self.deviceindex = deviceindex
+    def run(self):
+        audio.playaudio_class().playaudio(self.selecetedfilepath,self.deviceindex,1024)    
 
 class hearituself_thread(QtCore.QThread):
     suicidefunc = QtCore.pyqtSignal(str)
@@ -81,7 +89,7 @@ class hearituself_thread(QtCore.QThread):
         while True:
             time.sleep(0.5)
             #print(str(audio.getisaudioplaying())+" in while")
-            if audio.getisaudioplaying() == True:
+            if audio.playaudio_class().getisaudioplaying() == True:
                 
                 hearituselfcalledtimes[0] += 1
                 print("hearit u self started") 
@@ -228,6 +236,7 @@ class Ui_voicemode(object):
         self.stop = QtWidgets.QPushButton(self.soundboard)
         self.stop.setObjectName(u"stop")
         self.stop.setGeometry(QtCore.QRect(90, 190, 41, 23))
+        self.stop.clicked.connect(self.stop_clk)
         print(audiofiledir[0])
         self.getaudiolist()
         self.getaudiodevices()
@@ -404,12 +413,23 @@ class Ui_voicemode(object):
         self.outputdevice.addItems(deviceslistout)
 
     def play_clk(self):
-        self.getcheckditems(model)
-        print(selectedaudios)
-        selecetedfilepath = selectedaudios[0].replace('\\','/')
-        print(selecetedfilepath)
-        audio.playaudio(selecetedfilepath,deviceslist.index(self.outputdevice.currentText()),1024)
-    
+        try:
+            self.getcheckditems(model)
+            print(selectedaudios)
+            selecetedfilepath = selectedaudios[0].replace('\\','/')
+            print(selecetedfilepath)
+            self.thread4 = playaudio_thread(selecetedfilepath,deviceslist.index(self.outputdevice.currentText()))
+            self.thread4.start()
+        except:
+            pass    
+        #audio.playaudio(selecetedfilepath,deviceslist.index(self.outputdevice.currentText()),1024)
+    def stop_clk(self):
+        
+        audio.playaudio_class().stopstream()
+        self.thread4.setTerminationEnabled(True)
+        self.thread4.terminate()
+            
+           
     def getcheckditems(self,models):
         selectedaudios.clear()
         for index in range(models.rowCount()):

@@ -66,7 +66,7 @@ def startmictooutputforhearaudio(inputdeviceindex,outputdeviceindex,volume):
         #input()
         while sd.Stream.active:
             time.sleep(0.02)
-            if audio.getisaudioplaying() == False:
+            if audio.playaudio_class().getisaudioplaying() == False:
                 print("stopthis shit")
                 break    
 

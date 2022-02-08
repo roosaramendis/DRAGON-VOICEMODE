@@ -23,7 +23,7 @@ def starlistener(hotkeydict,selecteddiviceinderx):
         calledtimes[0] +=1
         if calledtimes[0] < 2:
             afilename = hotkeydict[pressedkey]
-            audio.playaudio(filename=afilename,deviceindex=selecteddiviceinderx,chunksize=1024)
+            audio.playaudio_class().playaudio(filename=afilename,deviceindex=selecteddiviceinderx,chunksize=1024)
         else:
             print("done")
             calledtimes[0] = 0
