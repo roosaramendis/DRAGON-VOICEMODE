@@ -424,7 +424,7 @@ class Ui_voicemode(object):
             pass    
         #audio.playaudio(selecetedfilepath,deviceslist.index(self.outputdevice.currentText()),1024)
     def stop_clk(self):
-        
+        pyaudio.PyAudio().__getattribute__('streams')
         audio.playaudio_class().stopstream()
         self.thread4.setTerminationEnabled(True)
         self.thread4.terminate()
