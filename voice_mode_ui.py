@@ -360,7 +360,7 @@ class Ui_voicemode(object):
         for i in list_of_files:
             file_extension = pathlib.Path(i).suffix
             print("File Extension: ", file_extension)
-            if file_extension == ".wav":
+            if file_extension == ".wav" or file_extension == ".mp3":
                 list_of_Afiles.append(i)
         self.listviwer(list_of_Afiles)    
     

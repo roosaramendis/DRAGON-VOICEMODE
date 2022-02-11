@@ -13,7 +13,7 @@ import threading
 import pydub
 from pydub import AudioSegment
 import numpy as np
-
+import os
 
 
 global isaudioplaying
@@ -111,13 +111,24 @@ class playaudio_class:
         chunk = chunksize 
         
         # Open sound file  in read binary form.
-        self.file = wave.open(filename, 'rb')
+        #self.file = wave.open(filename, 'rb')
         #self.file = AudioSegment.from_mp3()
         a, fr ,asg = self.audio_file_to_np_array(filename)
         dvc = deviceindex  # Index of an OUTPUT device (from sd.query_devices() on YOUR machine)
         sd.default.device = dvc  # Change default OUTPUT device
         sd.play(a, samplerate=fr)
-        sd.wait()
+        #sd.wait()
+        duration = asg.duration_seconds
+        while duration > 0:
+            isaudioplaying[0] = True
+            voice_mode_ui.setisaudioplaying(True)
+            time.sleep(0.02)
+            duration -= 0.02
+            print(duration)
+        sd.stop()    
+        isaudioplaying[0] = False
+        voice_mode_ui.setisaudioplaying(False)
+        globle_key_listener.itwasdone(True)
 
     
         '''def callback(outdata, frames, time, status):
@@ -134,6 +145,8 @@ class playaudio_class:
         
 
     def audio_file_to_np_array(self,file_name):
+        pydub.AudioSegment.converter = os.getcwd()+ "\\ffmpeg.exe"                    
+        pydub.AudioSegment.ffprobe   = os.getcwd()+ "\\ffprobe.exe"
         asg = pydub.AudioSegment.from_file(file_name)
         dtype = getattr(np, "int{:d}".format(asg.sample_width * 8))  # Or could create a mapping: {1: np.int8, 2: np.int16, 4: np.int32, 8: np.int64}
         arr = np.ndarray((int(asg.frame_count()), asg.channels), buffer=asg.raw_data, dtype=dtype)
