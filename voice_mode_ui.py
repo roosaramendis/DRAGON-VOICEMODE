@@ -58,6 +58,11 @@ hearmyselfdevice = ['']
 global hearmyselfvolume
 hearmyselfvolume = [1]
 
+
+
+
+
+
 def setisaudioplaying(isplaying):
     isaudioplaying.clear()
     isaudioplaying.append(isplaying)
@@ -90,7 +95,6 @@ class hearituself_thread(QtCore.QThread):
             time.sleep(0.5)
             #print(str(audio.getisaudioplaying())+" in while")
             if audio.playaudio_class().getisaudioplaying() == True:
-                
                 hearituselfcalledtimes[0] += 1
                 print("hearit u self started") 
                 if hearituselfcalledtimes[0] <2: 
@@ -285,6 +289,7 @@ class Ui_voicemode(object):
             self.thread3 = hearituself_thread(selectedinputdevice=deviceslist.index(sd.query_devices(kind='input')['name']),selectedoutputdevice=deviceslist.index(hearmyselfdevice[0]),volume=self.horizontalSlider.value())
         if overridehearuselfdevice[0] == 0:
             self.thread3 = hearituself_thread(selectedinputdevice=deviceslist.index(sd.query_devices(kind='input')['name']),selectedoutputdevice=deviceslist.index(sd.query_devices(kind='output')['name']),volume=self.horizontalSlider.value())    
+        
         self.thread3.start()
         self.thread3.suicidefunc.connect(self.stophearituself)
 
@@ -425,11 +430,13 @@ class Ui_voicemode(object):
         #audio.playaudio(selecetedfilepath,deviceslist.index(self.outputdevice.currentText()),1024)
     def stop_clk(self):
         
-        audio.playaudio_class().stopstream()
+        print(str(sd.get_stream()))
+        audio.stopplaying()
+        #sd.stop()
         self.thread4.setTerminationEnabled(True)
         self.thread4.terminate()
-            
-           
+        sd.default.reset()
+                 
     def getcheckditems(self,models):
         selectedaudios.clear()
         for index in range(models.rowCount()):

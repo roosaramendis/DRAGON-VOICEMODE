@@ -18,6 +18,8 @@ import os
 
 global isaudioplaying
 isaudioplaying = [False]
+global duration
+duration = [0]
 
 class playaudio_class1:
     
@@ -118,13 +120,16 @@ class playaudio_class:
         sd.default.device = dvc  # Change default OUTPUT device
         sd.play(a, samplerate=fr)
         #sd.wait()
-        duration = asg.duration_seconds
-        while duration > 0:
+        duration[0] = asg.duration_seconds
+        while duration[0] > 0:
+            
+            time.sleep(0.02)
+            duration[0] -= 0.02
             isaudioplaying[0] = True
             voice_mode_ui.setisaudioplaying(True)
-            time.sleep(0.02)
-            duration -= 0.02
             print(duration)
+            #print("stofocedfromui"+str(voice_mode_ui.getisstopfoced()))
+        print('stop')    
         sd.stop()    
         isaudioplaying[0] = False
         voice_mode_ui.setisaudioplaying(False)
@@ -153,3 +158,9 @@ class playaudio_class:
         #print("\n", asg.frame_rate, arr.shape, arr.dtype, arr.size, len(asg.raw_data), len(asg.get_array_of_samples()))  # @TODO: Comment this line!!!
         return arr, asg.frame_rate ,asg
        
+def stopplaying():
+    sd.stop()    
+    isaudioplaying[0] = False
+    voice_mode_ui.setisaudioplaying(False)
+    globle_key_listener.itwasdone(True)
+    duration[0] = 0
