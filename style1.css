@@ -1,0 +1,125 @@
+QWidget{
+    color: #b1b1b1;
+    background-color: #160000;
+    
+}
+QPushButton{
+    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #da8300, stop: 0.2 #4e4e4e, stop: 0.5 #525252, stop: 0.8 #4a4a4a, stop: 1 #da8300);
+    color: coral;
+    border-width: 2;
+    border-color: orange;
+    border-radius: 6;
+    border-style: solid;
+    
+
+QComboBox{
+    selection-background-color:#ffaa00;
+    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #da8300, stop: 0.2 #4e4e4e, stop: 0.5 #525252, stop: 0.8 #4a4a4a, stop: 1 #da8300);
+    color: coral;
+    border-width: 2;
+    border-color: orange;
+    border-radius: 6;
+    border-style: solid;
+}    
+}
+QComboBox:hover,QPushButton:hover
+{
+    color: #e0f0ff;
+    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #4e4e4e, stop: 0.2 #4e4e4e, stop: 0.5 #da8300, stop: 0.8 #4a4a4a, stop: 1 #4a4a4a);
+    border: 3px solid QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0.5 #ec0000, stop: 1 #d7801a);
+}
+QComboBox:on
+{
+    padding-top: 3px;
+    padding-left: 4px;
+    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #2d2d2d, stop: 0.1 #2b2b2b, stop: 0.5 #292929, stop: 0.9 #282828, stop: 1 #252525);
+    selection-background-color: #ffaa00;
+}
+QComboBox QAbstractItemView
+{
+    border: 2px solid darkgray;
+    selection-background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #ffa02f, stop: 1 #d7801a);
+}
+
+QComboBox::drop-down
+{
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 15px;
+
+    border-left-width: 0px;
+    border-left-color: darkgray;
+    border-left-style: solid; /* just a single line */
+    border-top-right-radius: 3px; /* same radius as the QComboBox */
+    border-bottom-right-radius: 3px;
+}
+QLineEdit
+{
+    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #4d4d4d, stop: 0 #646464, stop: 1 #5d5d5d);
+    padding: 1px;
+    border-style: solid;
+    border: 2px solid orange;
+    border-radius: 5;
+}
+
+QTabWidget::pane { /* The tab widget frame */
+    border-top: 2px solid orange;
+}
+
+QTabWidget::tab-bar {
+    left: 5px; /* move to the right by 5px */
+}
+
+/* Style the tab using the tab sub-control. Note that
+    it reads QTabBar _not_ QTabWidget */
+QTabBar::tab {
+    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #da8300, stop: 0.2 #4e4e4e, stop: 0.5 #525252, stop: 0.8 #4a4a4a, stop: 1 #da8300);
+    border: 2px solid orange;
+    border-bottom-color: orange; /* same as the pane color */
+    border-top-left-radius: 1px;
+    border-top-right-radius: 5px;
+    min-width: 8ex;
+    padding: 2px;
+}
+
+QTabBar::tab:selected, QTabBar::tab:hover {
+    color: #e0f0ff;
+    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #4e4e4e, stop: 0.2 #4e4e4e, stop: 0.5 #da8300, stop: 0.8 #4a4a4a, stop: 1 #4a4a4a);
+    border: 3px solid QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0.5 #ec0000, stop: 1 #d7801a);
+}
+
+
+QTabBar::tab:!selected {
+    margin-top: 2px; /* make non-selected tabs look smaller */
+}
+
+QListView {
+    background-color: #4d4d4d;
+    border-width: 3px;
+    border-color: orange;
+    border-radius: 5;
+    border-style: solid;
+    color: aliceblue;
+    
+}
+QListView::item:alternate {
+    background: #ff0000;
+}
+
+QListView::item:selected {
+    border: 1px solid #6a6ea9;
+}
+
+QListView::item:selected:!active {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                stop: 0 #ABAFE5, stop: 1 #8588B2);
+}
+
+QListView::item:selected:active {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                stop: 0 #6a6ea9, stop: 1 #888dd9);
+}
+
+QListView::item:hover {
+    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #4e4e4e, stop: 0.2 #4e4e4e, stop: 0.5 #da8300, stop: 0.8 #4a4a4a, stop: 1 #4a4a4a);
+}   

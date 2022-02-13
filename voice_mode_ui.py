@@ -22,6 +22,7 @@ import pickle
 import globle_key_listener
 import mic_to_output
 import time
+from PyQt5.QtCore import QFile, QTextStream
 
 
 global mydir
@@ -603,11 +604,19 @@ class Ui_voicemode(object):
         self.overridehearuselfdevice.setText(_translate("voicemode", u"override hear your self device", None))
         self.overridesoudboardvolume.setText(_translate("voicemode", u"override sound board volume", None))
         self.showhotkey.setText(_translate("voicemode", u"Show Hotkey", None))
+        
+        
         #self.label_2.setText(_translate("voicemode", u"TextLabel", None))
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
+    stylef = QFile("style1.css") 
+    stylef.open(QFile.ReadOnly | QFile.Text)
+    stylesheet = QTextStream(stylef)
+    stylesheetstr =stylesheet.readAll()
+    print(stylesheetstr)
+    app.setStyleSheet(stylesheetstr)
     voicemode = QtWidgets.QMainWindow()
     ui = Ui_voicemode()
     ui.setupUi(voicemode)
