@@ -133,7 +133,7 @@ class gblkeylistener_thread(QtCore.QThread):
         super(gblkeylistener_thread,self).__init__(parent)
     def run(self):
         try:
-            globle_key_listener.starlistener(hotkeydict,deviceslist.index(selectedoutputdevicetext[0]))
+            globle_key_listener.starlistener(hotkeydict,deviceslist.index(selectedoutputdevicetext[0]),soundboardvolume[0]/100)
         except:
             pass
 class Ui_voicemode(object):
