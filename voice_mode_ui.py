@@ -57,6 +57,10 @@ global hearmyselfdevice
 hearmyselfdevice = ['']
 global hearmyselfvolume
 hearmyselfvolume = [1]
+global overridesoundboardvolume
+overridesoundboardvolume = [0]
+global soundboardvolume
+soundboardvolume = [1]
 
 
 
@@ -80,8 +84,11 @@ class playaudio_thread(QtCore.QThread):
         self.selecetedfilepath = selecetedfilepath
         self.deviceindex = deviceindex
     def run(self):
-        audio.playaudio_class().playaudio(self.selecetedfilepath,self.deviceindex,1024)    
-
+        if overridesoundboardvolume[0] == 2:
+            audio.playaudio_class().playaudio(self.selecetedfilepath,self.deviceindex,1024,soundboardvolume[0]/100)    
+        if overridesoundboardvolume[0] == 0:
+            audio.playaudio_class().playaudio(self.selecetedfilepath,self.deviceindex,1024)
+            
 class hearituself_thread(QtCore.QThread):
     suicidefunc = QtCore.pyqtSignal(str)
     def __init__(self,selectedinputdevice,selectedoutputdevice,volume, parent=None):
@@ -232,7 +239,14 @@ class Ui_voicemode(object):
         self.overridehearuselfdevice = QtWidgets.QCheckBox(self.tab_2)
         self.overridehearuselfdevice.setObjectName(u"overridehearuselfdevice")
         self.overridehearuselfdevice.setGeometry(QtCore.QRect(10, 110, 191, 17))
-           
+        self.overridesoudboardvolume = QtWidgets.QCheckBox(self.tab_2)
+        self.overridesoudboardvolume.setObjectName(u"overridesoudboardvolume")
+        self.overridesoudboardvolume.setGeometry(QtCore.QRect(10, 190, 191, 17))
+        self.soundboardvolumeslider = QtWidgets.QSlider(self.tab_2)
+        self.soundboardvolumeslider.setObjectName(u"soundboardvolumeslider")
+        self.soundboardvolumeslider.setGeometry(QtCore.QRect(10, 220, 451, 22))
+        self.soundboardvolumeslider.setMaximum(100)
+        self.soundboardvolumeslider.setOrientation(QtCore.Qt.Horizontal)   
         self.play = QtWidgets.QPushButton(self.soundboard)
         self.play.setObjectName(u"play")
         self.play.setGeometry(QtCore.QRect(10, 190, 41, 23))
@@ -272,6 +286,20 @@ class Ui_voicemode(object):
             self.horizontalSlider.setValue(hearmyselfvolume[0])
         except:
             pass
+        try:
+            if overridesoundboardvolume[0] == 0:
+                self.overridesoudboardvolume.setChecked(False)
+            elif overridesoundboardvolume[0] == 2:
+                self.overridesoudboardvolume.setChecked(True)
+        except:
+            pass
+        try:
+            self.soundboardvolumeslider.setValue(soundboardvolume[0])
+        except:
+            pass
+
+        self.overridesoudboardvolume.stateChanged.connect(self.setoverridesoudboarvolumedval)
+        self.soundboardvolumeslider.valueChanged.connect(self.setsoundboardvolumeval)
         self.horizontalSlider.valueChanged.connect(self.sethearmyselfvolumeval)
         self.sampelrate.setText('hear my self volume '+str(self.horizontalSlider.value()))    
         self.hearmyselfdevice.currentTextChanged.connect(self.sethearmyselfdeviceval)   
@@ -325,7 +353,9 @@ class Ui_voicemode(object):
             self.settingval.setValue("overridehearuselfdevice",0)
             self.settingval.setValue("hearmyselfdevice",0)
             self.settingval.setValue("hearmyselfvolume",100)
-        
+            self.settingval.setValue("overridesoundboardvolume",0)
+            self.settingval.setValue("soundboardvolume",100)
+            
         elif len(settingkeylist)==0:
             print("set def val")
             self.settingval.setValue("audio path",userpath+"/Music")
@@ -334,6 +364,8 @@ class Ui_voicemode(object):
             self.settingval.setValue("overridehearuselfdevice",0)
             self.settingval.setValue("hearmyselfdevice",0)
             self.settingval.setValue("hearmyselfvolume",100)
+            self.settingval.setValue("overridesoundboardvolume",0)
+            self.settingval.setValue("soundboardvolume",100)
 
     def getsettingvals(self):
         self.settingval = QSettings("Dragon Voide Mode","settings vals")
@@ -343,7 +375,8 @@ class Ui_voicemode(object):
         overridehearuselfdevice[0] = self.settingval.value("overridehearuselfdevice")
         hearmyselfdevice[0] = self.settingval.value("hearmyselfdevice")
         hearmyselfvolume[0] = self.settingval.value("hearmyselfvolume")
-
+        overridesoundboardvolume[0] = self.settingval.value("overridesoundboardvolume")
+        soundboardvolume[0] = self.settingval.value("soundboardvolume")
 
     def setsettingvals(self):
         self.settingval = QSettings("Dragon Voide Mode","settings vals")
@@ -425,8 +458,8 @@ class Ui_voicemode(object):
             print(selecetedfilepath)
             self.thread4 = playaudio_thread(selecetedfilepath,deviceslist.index(self.outputdevice.currentText()))
             self.thread4.start()
-        except:
-            pass    
+        except Exception as e:
+            print(e)  
         #audio.playaudio(selecetedfilepath,deviceslist.index(self.outputdevice.currentText()),1024)
     def stop_clk(self):
         
@@ -502,6 +535,14 @@ class Ui_voicemode(object):
         self.settingval.setValue("hearmyselfvolume",self.horizontalSlider.value())
         self.sampelrate.setText('hear my self volume '+str(self.horizontalSlider.value()))
 
+    def setoverridesoudboarvolumedval(self,bval):
+        print(bval)
+        self.settingval.setValue("overridesoundboardvolume",bval)
+        overridesoundboardvolume[0] = bval
+
+    def setsoundboardvolumeval(self):
+        self.settingval.setValue("soundboardvolume",self.soundboardvolumeslider.value())
+        soundboardvolume[0] = self.soundboardvolumeslider.value()
     def retranslateUi(self, voicemode):
         _translate = QtCore.QCoreApplication.translate
         voicemode.setWindowTitle(_translate("voicemode", "DRAGON VOICE MODE"))
@@ -523,6 +564,7 @@ class Ui_voicemode(object):
         self.label_4.setText(_translate("voicemode", u"output", None))
         self.label_5.setText(_translate("voicemode", u"select device to hear your self", None))
         self.overridehearuselfdevice.setText(_translate("voicemode", u"override hear your self device", None))
+        self.overridesoudboardvolume.setText(_translate("voicemode", u"override sound board volume", None))
         #self.label_2.setText(_translate("voicemode", u"TextLabel", None))
 
 if __name__ == "__main__":

@@ -101,7 +101,7 @@ class playaudio_class:
         return isaudioplaying[0]
 
 
-    def playaudio(self,filename=None,deviceindex=None,chunksize=None):
+    def playaudio(self,filename=None,deviceindex=None,chunksize=None,volume=1):
         
         print(deviceindex)
         self.p = pyaudio.PyAudio()
@@ -118,7 +118,7 @@ class playaudio_class:
         a, fr ,asg = self.audio_file_to_np_array(filename)
         dvc = deviceindex  # Index of an OUTPUT device (from sd.query_devices() on YOUR machine)
         sd.default.device = dvc  # Change default OUTPUT device
-        sd.play(a, samplerate=fr)
+        sd.play(a*volume, samplerate=fr)
         #sd.wait()
         duration[0] = asg.duration_seconds
         while duration[0] > 0:
@@ -154,7 +154,9 @@ class playaudio_class:
         pydub.AudioSegment.ffprobe   = os.getcwd()+ "\\ffprobe.exe"
         asg = pydub.AudioSegment.from_file(file_name)
         dtype = getattr(np, "int{:d}".format(asg.sample_width * 8))  # Or could create a mapping: {1: np.int8, 2: np.int16, 4: np.int32, 8: np.int64}
-        arr = np.ndarray((int(asg.frame_count()), asg.channels), buffer=asg.raw_data, dtype=dtype)
+        #arr = np.ndarray((int(asg.frame_count()), asg.channels), buffer=asg.raw_data, dtype=dtype)
+        arr = np.array(asg.get_array_of_samples(), dtype=np.float32).reshape((-1, asg.channels)) / (
+            1 << (8 * asg.sample_width - 1))
         #print("\n", asg.frame_rate, arr.shape, arr.dtype, arr.size, len(asg.raw_data), len(asg.get_array_of_samples()))  # @TODO: Comment this line!!!
         return arr, asg.frame_rate ,asg
        
