@@ -471,13 +471,15 @@ class Ui_voicemode(object):
             print(e)  
         #audio.playaudio(selecetedfilepath,deviceslist.index(self.outputdevice.currentText()),1024)
     def stop_clk(self):
-        
-        print(str(sd.get_stream()))
-        audio.stopplaying()
-        #sd.stop()
-        self.thread4.setTerminationEnabled(True)
-        self.thread4.terminate()
-        sd.default.reset()
+        try:
+            print(str(sd.get_stream()))
+            audio.stopplaying()
+            #sd.stop()
+            self.thread4.setTerminationEnabled(True)
+            self.thread4.terminate()
+            sd.default.reset()
+        except Exception as e:
+            print(e)
                  
     def getcheckditems(self,models):
         selectedaudios.clear()
@@ -562,24 +564,28 @@ class Ui_voicemode(object):
         return matchedkey        
 
     def whenchekedlistitem(self):
-        self.getcheckditems(model)
-        print(str(self.getkeyofitem(selectedaudios[0])))
-        self.hotkeylb.setText(str(self.getkeyofitem(selectedaudios[0])))
-
+        try:
+            self.getcheckditems(model)
+            print(str(self.getkeyofitem(selectedaudios[0])))
+            self.hotkeylb.setText(str(self.getkeyofitem(selectedaudios[0])))
+        except Exception as e:
+            print(e)
     def removehotkey_clk(self):
-        self.getcheckditems(model)
-        print(str(self.getkeyofitem(selectedaudios[0])))
-        hotkeydict.pop(self.getkeyofitem(selectedaudios[0]))
-        path =  mydir+"/saves"
-        if os.path.exists(path)==False:
-            print("not exist have to create")  
-            os.mkdir(path)
-            pickle.dump((hotkeydict),open(path+"/hotkeys"+".dvm","wb"))
-            print("saving to "+str(path))
-        else:
-            pickle.dump((hotkeydict),open(path+"/hotkeys"+".dvm","wb"))
-            print("saving to "+str(path))
-
+        try:
+            self.getcheckditems(model)
+            print(str(self.getkeyofitem(selectedaudios[0])))
+            hotkeydict.pop(self.getkeyofitem(selectedaudios[0]))
+            path =  mydir+"/saves"
+            if os.path.exists(path)==False:
+                print("not exist have to create")  
+                os.mkdir(path)
+                pickle.dump((hotkeydict),open(path+"/hotkeys"+".dvm","wb"))
+                print("saving to "+str(path))
+            else:
+                pickle.dump((hotkeydict),open(path+"/hotkeys"+".dvm","wb"))
+                print("saving to "+str(path))
+        except Exception as e:
+            print(e)
 
     def retranslateUi(self, voicemode):
         _translate = QtCore.QCoreApplication.translate
