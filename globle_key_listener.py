@@ -17,13 +17,14 @@ def itwasdone(doneornot):
     currentkey.clear()
     workdone[0] = doneornot 
 
-def starlistener(hotkeydict,selecteddiviceinderx):
+def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
     def callplayaudio(pressedkey):
         print(pressedkey)
         calledtimes[0] +=1
         if calledtimes[0] < 2:
             afilename = hotkeydict[pressedkey]
-            audio.playaudio(filename=afilename,deviceindex=selecteddiviceinderx,chunksize=1024)
+            print(volume)
+            audio.playaudio_class().playaudio(filename=afilename,deviceindex=selecteddiviceinderx,chunksize=1024,volume=volume)
         else:
             print("done")
             calledtimes[0] = 0
