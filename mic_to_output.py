@@ -7,7 +7,10 @@ assert numpy  # avoid "imported but unused" message (W0611)
 import threading
 import voice_mode_ui
 import audio
+import numpy as np
 
+global voicechanger
+voicechanger = False
 
 
 def startmictooutputforhearaudio(inputdeviceindex,outputdeviceindex,volume):
@@ -45,14 +48,12 @@ def startmictooutputforhearaudio(inputdeviceindex,outputdeviceindex,volume):
     parser.add_argument('--blocksize', type=int, help='block size')
     parser.add_argument('--latency', type=float, help='latency in seconds')
     args = parser.parse_args(remaining)
-
-
+  
     def callback(indata, outdata, frames, time, status):
         if status:
             print(status)
         outdata[:] = (indata) * volume#indata
-
-    
+            
     print("mic input stated")
     print(volume)
     print(str(inputdeviceindex)+str(outputdeviceindex))
@@ -107,10 +108,28 @@ def startmictooutput(inputdeviceindex,outputdeviceindex):
     args = parser.parse_args(remaining)
 
 
+    def pitchchange(data,pitch):
+        shift = pitch//100
+        da = data
+        print(da)
+        left, right = da[0::2], da[1::2]  # left and right channel
+        lf= np.fft.rfft(da)
+        lf= np.roll(lf, shift)
+        lf[0:shift] = 0
+        nl= np.fft.irfft(lf)
+        ns = nl
+        #df= np.multiply(da,np.roll(da,shift))
+        df= np.multiply(da,ns)
+        print(df)
+        return df
+
     def callback(indata, outdata, frames, time, status):
         if status:
             print(status)
-        outdata[:] = indata
+        if voicechanger == False:    
+            outdata[:] = indata
+        elif voicechanger == True:    
+            outdata[:] = (pitchchange(indata,50))
 
     
     print("mic input stated")
