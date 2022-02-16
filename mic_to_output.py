@@ -48,12 +48,13 @@ def startmictooutputforhearaudio(inputdeviceindex,outputdeviceindex,volume):
     parser.add_argument('--blocksize', type=int, help='block size')
     parser.add_argument('--latency', type=float, help='latency in seconds')
     args = parser.parse_args(remaining)
-  
+
+
     def callback(indata, outdata, frames, time, status):
         if status:
             print(status)
         outdata[:] = (indata) * volume#indata
-            
+  
     print("mic input stated")
     print(volume)
     print(str(inputdeviceindex)+str(outputdeviceindex))
