@@ -78,6 +78,31 @@ def getstopstreaminmicintoout():
     print(stopstreaminmicintoout[0])
     return stopstreaminmicintoout[0]
 
+class TableModel(QtCore.QAbstractTableModel):
+    
+    def __init__(self, data):
+        super(TableModel, self).__init__()
+        self._data = data
+
+    def data(self, index, role):
+        if role == QtCore.Qt.DisplayRole:
+            
+            return self.datalist[index.row()][index.column()]
+
+    def rowCount(self, index):
+        
+        self.keylist =[]
+        self.vallist = []
+        self.datalist = []
+        for i in self._data.keys():
+            self.keylist.append(i)
+            self.vallist.append(self._data.get(i))
+            dl = (str(self._data.get(i)),str(i))
+            self.datalist.append(dl)
+        return len(self.datalist)
+
+    def columnCount(self, index):
+        return len(self.datalist[0])
 
 class playaudio_thread(QtCore.QThread):
     
@@ -188,12 +213,24 @@ class Ui_voicemode(object):
         self.removehk.setGeometry(QtCore.QRect(10, 90, 121, 41))
         self.removehk.setObjectName("removehk")
         self.removehk.clicked.connect(self.removehotkey_clk)
-        self.repeat = QtWidgets.QCheckBox(self.soundboard)
+        '''self.repeat = QtWidgets.QCheckBox(self.soundboard)
         self.repeat.setGeometry(QtCore.QRect(10, 140, 101, 17))
-        self.repeat.setObjectName("repeat")
-        self.listView = QtWidgets.QListView(self.soundboard)
-        self.listView.setGeometry(QtCore.QRect(180, 10, 450, 400))
+        self.repeat.setObjectName("repeat")'''
+        self.tabWidget_2 = QtWidgets.QTabWidget(self.soundboard)
+        self.tabWidget_2.setObjectName(u"tabWidget_2")
+        self.tabWidget_2.setGeometry(QtCore.QRect(150, 10, 481, 431))
+        self.audiofileview_tb = QtWidgets.QWidget()
+        self.audiofileview_tb.setObjectName(u"audiofileview_tb")
+        self.listView = QtWidgets.QListView(self.audiofileview_tb)
+        self.listView.setGeometry(QtCore.QRect(20, 10, 451, 381))
         self.listView.setObjectName("listView")
+        self.tabWidget_2.addTab(self.audiofileview_tb, "")
+        self.hotkeysview_tb = QtWidgets.QWidget()
+        self.hotkeysview_tb.setObjectName(u"hotkeysview_tb")
+        self.tableView = QtWidgets.QTableView(self.hotkeysview_tb)
+        self.tableView.setObjectName(u"tableView")
+        self.tableView.setGeometry(QtCore.QRect(10, 10, 461, 381))
+        self.tabWidget_2.addTab(self.hotkeysview_tb, "")
         self.refreshlist = QtWidgets.QPushButton(self.soundboard)
         self.refreshlist.setObjectName(u"refreshlist")
         self.refreshlist.setGeometry(QtCore.QRect(10, 160, 121, 23))
@@ -269,6 +306,7 @@ class Ui_voicemode(object):
         print(audiofiledir[0])
         self.getaudiolist()
         self.getaudiodevices()
+        self.settableview(hotkeydict)
         
         try:
             print(selectedoutputdevicetext[0])
@@ -587,6 +625,24 @@ class Ui_voicemode(object):
         except Exception as e:
             print(e)
 
+    def settableview(self,dic):
+        global tablemodel
+        tablemodel = QtGui.QStandardItemModel()
+        dic = dic
+        print(str(enumerate(dic)))
+        tablemodel = TableModel(dic)
+        self.tableView.setModel(tablemodel)
+        '''for row, col in enumerate(dic):
+            print(col)
+            rowitem = QtGui.QStandardItem(row)
+            colitem = QtGui.QStandardItem(col)
+            tablemodel.appendRow(rowitem)
+            tablemodel.appendColumn(colitem)
+            tablemodel = TableModel(dict)
+            self.tableView.setModel(tablemodel)'''
+            #self.tableView.setItem(row, col, newitem)
+
+
     def retranslateUi(self, voicemode):
         _translate = QtCore.QCoreApplication.translate
         voicemode.setWindowTitle(_translate("voicemode", "DRAGON VOICE MODE"))
@@ -595,11 +651,11 @@ class Ui_voicemode(object):
         self.comboBox.setItemText(0, _translate("voicemode", "alt_l"))
         self.label.setText(_translate("voicemode", "+"))
         self.removehk.setText(_translate("voicemode", "Remove Hot Key"))
-        self.repeat.setText(_translate("voicemode", "repeat"))
+        #self.repeat.setText(_translate("voicemode", "repeat"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.soundboard), _translate("voicemode", "Sound Board"))
         self.sampelrate.setText(_translate("voicemode", "hear my self volume"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("voicemode", "voice settings"))
-        self.about.setTitle(_translate("voicemode", "about"))
+        self.about.setTitle(_translate("voicemode", "Edit"))
         self.openaudiopath.setText(_translate("voicemode", u"open audio files dir", None))
         self.refreshlist.setText(_translate("voicemode", u"Refresh List", None))
         self.play.setText(_translate("voicemode", u"play", None))
@@ -610,6 +666,8 @@ class Ui_voicemode(object):
         self.overridehearuselfdevice.setText(_translate("voicemode", u"override hear your self device", None))
         self.overridesoudboardvolume.setText(_translate("voicemode", u"override sound board volume", None))
         self.showhotkey.setText(_translate("voicemode", u"Show Hotkey", None))
+        self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.audiofileview_tb), _translate("voicemode", u"Audio files view", None))
+        self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.hotkeysview_tb), _translate("voicemode", u"Hotkeys view", None))
         
         
         #self.label_2.setText(_translate("voicemode", u"TextLabel", None))

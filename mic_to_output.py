@@ -2,8 +2,8 @@ import argparse
 from email.mime import audio
 import time
 import sounddevice as sd
-import numpy  # Make sure NumPy is loaded before it is used in the callback
-assert numpy  # avoid "imported but unused" message (W0611)
+import numpy  
+assert numpy  
 import threading
 import voice_mode_ui
 import audio
@@ -139,10 +139,7 @@ def startmictooutput(inputdeviceindex,outputdeviceindex):
                     samplerate=args.samplerate, blocksize=args.blocksize,
                     dtype=args.dtype, latency=args.latency,
                     channels=args.channels, callback=callback):
-        '''print('#' * 80)
-        print('press Return to quit')
-        print('#' * 80)'''
-        #input()
+
         while sd.Stream.active:
             time.sleep(0.02)
                

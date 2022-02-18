@@ -259,5 +259,20 @@ QSlider::handle:horizontal {
     margin: -4px 0;
     border-radius: 2px;
 }
-
-
+QTableView {
+    background-color: #3a3a3a;
+    border-width: 3px;
+    border-color: orange;
+    border-radius: 5;
+    border-style: solid;
+    color: aliceblue;
+}
+QTableView::item:selected:active {
+    color: #160000;
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                stop: 0.5 #ffa500, stop: 1 #888dd9);
+}
+QTableView::item:hover {
+    border-top: 3px solid QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0.5 #ec0000, stop: 1 #d7801a);
+    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0.3 #da8300, stop: 0.8 #4a4a4a, stop: 1 #4a4a4a);
+}
