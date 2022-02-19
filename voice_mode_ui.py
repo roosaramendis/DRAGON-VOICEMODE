@@ -95,19 +95,23 @@ class TableModel(QtCore.QAbstractTableModel):
             return self.datalist[index.row()][index.column()]
 
     def rowCount(self, index):
-        
-        self.keylist =[]
-        self.vallist = []
-        self.datalist = []
-        for i in self._data.keys():
-            self.keylist.append(i)
-            self.vallist.append(self._data.get(i))
-            dl = (str(self._data.get(i)),str(i))
-            self.datalist.append(dl)
-        return len(self.datalist)
-
+        try:
+            self.keylist =[]
+            self.vallist = []
+            self.datalist = []
+            for i in self._data.keys():
+                self.keylist.append(i)
+                self.vallist.append(self._data.get(i))
+                dl = (str(self._data.get(i)),str(i))
+                self.datalist.append(dl)
+            return len(self.datalist)
+        except:
+            pass
     def columnCount(self, index):
-        return len(self.datalist[0])
+        try:
+            return len(self.datalist[0])
+        except:
+            pass    
 
 class playaudio_thread(QtCore.QThread):
     
@@ -364,7 +368,8 @@ class Ui_voicemode(object):
         print(audiofiledir[0])
         self.getaudiolist()
         self.getaudiodevices()
-        self.settableview(hotkeydict)
+        if len(hotkeydict.keys()) != 0:
+            self.settableview(hotkeydict)
         
         try:
             print(selectedoutputdevicetext[0])
@@ -713,11 +718,15 @@ class Ui_voicemode(object):
 
     def settableview(self,dic):
         global tablemodel
-        tablemodel = QtGui.QStandardItemModel()
-        dic = dic
-        print(str(enumerate(dic)))
-        tablemodel = TableModel(dic)
-        self.tableView.setModel(tablemodel)
+        try:
+            tablemodel = QtGui.QStandardItemModel()
+        
+            dic = dic
+            print(str(enumerate(dic)))
+            tablemodel = TableModel(dic)
+            self.tableView.setModel(tablemodel)
+        except:
+            pass   
         '''for row, col in enumerate(dic):
             print(col)
             rowitem = QtGui.QStandardItem(row)
