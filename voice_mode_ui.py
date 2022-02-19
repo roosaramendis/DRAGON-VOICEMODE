@@ -238,6 +238,53 @@ class Ui_voicemode(object):
         self.tabWidget.addTab(self.soundboard, "")
         self.tab_2 = QtWidgets.QWidget()
         self.tab_2.setObjectName("tab_2")
+        # -------------voice changer ui ----------------------------------------------------
+        self.voicechanger_tb = QtWidgets.QWidget()
+        self.voicechanger_tb.setObjectName(u"voicechanger_tb")
+        self.voicechangerlist = QtWidgets.QListWidget(self.voicechanger_tb)
+        __qlistwidgetitem = QtWidgets.QListWidgetItem(self.voicechangerlist)
+        __qlistwidgetitem.setCheckState(QtCore.Qt.Checked);
+        __qlistwidgetitem.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsUserCheckable|QtCore.Qt.ItemIsEnabled);
+        self.voicechangerlist.setObjectName(u"voicechangerlist")
+        self.voicechangerlist.setGeometry(QtCore.QRect(10, 10, 181, 411))
+        self.selectionmodel = self.voicechangerlist.selectionModel()
+        self.selectionmodel.selectionChanged.connect(self.showpitchchangersettings)
+        #self.voicechangerlist.selectionChanged.connect(self.showpitchchangersettings)
+        self.voicechangersettingarea = QtWidgets.QScrollArea(self.voicechanger_tb)
+        self.voicechangersettingarea.setObjectName(u"voicechangersettingarea")
+        self.voicechangersettingarea.setGeometry(QtCore.QRect(210, 10, 411, 411))
+        self.voicechangersettingarea.setWidgetResizable(True)
+        self.scrollAreaWidgetContents = QtWidgets.QWidget()
+        self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 409, 409))
+        self.voicechangersettingarea.setWidget(self.scrollAreaWidgetContents)
+        self.note = QtWidgets.QLabel(self.scrollAreaWidgetContents)
+        self.note.setObjectName(u"note")
+        self.note.setGeometry(QtCore.QRect(20, 10, 371, 51))
+        self.note.hide()
+        self.pitchval_hs = QtWidgets.QSlider(self.scrollAreaWidgetContents)
+        self.pitchval_hs.setObjectName(u"pitchval_hs")
+        self.pitchval_hs.setGeometry(QtCore.QRect(20, 100, 361, 22))
+        self.pitchval_hs.setOrientation(QtCore.Qt.Horizontal)
+        self.pitchval_hs.hide()
+        self.pitchval = QtWidgets.QLabel(self.scrollAreaWidgetContents)
+        self.pitchval.setObjectName(u"pitchval")
+        self.pitchval.setGeometry(QtCore.QRect(20, 80, 71, 16))
+        self.pitchval.hide()
+        self.pitch_volume = QtWidgets.QLabel(self.scrollAreaWidgetContents)
+        self.pitch_volume.setObjectName(u"pitch_volume")
+        self.pitch_volume.setGeometry(QtCore.QRect(20, 130, 47, 13))
+        self.pitch_volume.hide()
+        self.pitch_volume_hs = QtWidgets.QSlider(self.scrollAreaWidgetContents)
+        self.pitch_volume_hs.setObjectName(u"pitch_volume_hs")
+        self.pitch_volume_hs.setGeometry(QtCore.QRect(20, 150, 361, 22))
+        self.pitch_volume_hs.setOrientation(QtCore.Qt.Horizontal)
+        self.pitch_volume_hs.hide()
+        #self.showpitchchangersettings()
+        self.tabWidget.addTab(self.voicechanger_tb, "")
+
+        #-----------------------------------------------------------------------------------------
+
         self.horizontalSlider = QtWidgets.QSlider(self.tab_2)
         self.horizontalSlider.setGeometry(QtCore.QRect(10, 30, 451, 22))
         self.horizontalSlider.setMaximum(200)
@@ -402,6 +449,7 @@ class Ui_voicemode(object):
             self.settingval.setValue("hearmyselfvolume",100)
             self.settingval.setValue("overridesoundboardvolume",0)
             self.settingval.setValue("soundboardvolume",100)
+            self.settingval.setValue("pitchvolume",100)
             
         elif len(settingkeylist)==0:
             print("set def val")
@@ -413,6 +461,7 @@ class Ui_voicemode(object):
             self.settingval.setValue("hearmyselfvolume",100)
             self.settingval.setValue("overridesoundboardvolume",0)
             self.settingval.setValue("soundboardvolume",100)
+            self.settingval.setValue("pitchvolume",100)
 
     def getsettingvals(self):
         self.settingval = QSettings("Dragon Voide Mode","settings vals")
@@ -642,6 +691,13 @@ class Ui_voicemode(object):
             self.tableView.setModel(tablemodel)'''
             #self.tableView.setItem(row, col, newitem)
 
+    def showpitchchangersettings(self):
+
+        self.note.show()
+        self.pitchval.show()
+        self.pitchval_hs.show()
+        self.pitch_volume.show()
+        self.pitch_volume_hs.show()
 
     def retranslateUi(self, voicemode):
         _translate = QtCore.QCoreApplication.translate
@@ -668,8 +724,18 @@ class Ui_voicemode(object):
         self.showhotkey.setText(_translate("voicemode", u"Show Hotkey", None))
         self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.audiofileview_tb), _translate("voicemode", u"Audio files view", None))
         self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.hotkeysview_tb), _translate("voicemode", u"Hotkeys view", None))
-        
-        
+        __sortingEnabled = self.voicechangerlist.isSortingEnabled()
+        self.voicechangerlist.setSortingEnabled(False)
+        ___qlistwidgetitem = self.voicechangerlist.item(0)
+        ___qlistwidgetitem.setText(_translate("voicemode", u"Pitch Shift", None));
+        self.voicechangerlist.setSortingEnabled(__sortingEnabled)
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.voicechanger_tb), _translate("voicemode", u"voice changer", None))
+        try:    
+            self.note.setText(_translate("voicemode", u"still in devolopment", None))
+            self.pitchval.setText(_translate("voicemode", u"Pitch", None))
+            self.pitch_volume.setText(_translate("voicemode", u"Volume", None))
+        except:
+            pass    
         #self.label_2.setText(_translate("voicemode", u"TextLabel", None))
 
 if __name__ == "__main__":
