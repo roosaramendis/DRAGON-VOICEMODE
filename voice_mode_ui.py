@@ -63,7 +63,12 @@ global overridesoundboardvolume
 overridesoundboardvolume = [0]
 global soundboardvolume
 soundboardvolume = [1]
-
+global pitchvolume
+pitchvolume = [1]
+global pitch
+pitch = [1]
+global pitchshift
+pitchshift = [0]
 
 
 
@@ -246,7 +251,7 @@ class Ui_voicemode(object):
         __qlistwidgetitem.setCheckState(QtCore.Qt.Checked);
         __qlistwidgetitem.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsUserCheckable|QtCore.Qt.ItemIsEnabled);
         self.voicechangerlist.setObjectName(u"voicechangerlist")
-        self.voicechangerlist.setGeometry(QtCore.QRect(10, 10, 181, 411))
+        self.voicechangerlist.setGeometry(QtCore.QRect(10, 10, 181, 381))
         self.selectionmodel = self.voicechangerlist.selectionModel()
         self.selectionmodel.selectionChanged.connect(self.showpitchchangersettings)
         #self.voicechangerlist.selectionChanged.connect(self.showpitchchangersettings)
@@ -266,6 +271,7 @@ class Ui_voicemode(object):
         self.pitchval_hs.setObjectName(u"pitchval_hs")
         self.pitchval_hs.setGeometry(QtCore.QRect(20, 100, 361, 22))
         self.pitchval_hs.setOrientation(QtCore.Qt.Horizontal)
+        self.pitchval_hs.setMaximum(500)
         self.pitchval_hs.hide()
         self.pitchval = QtWidgets.QLabel(self.scrollAreaWidgetContents)
         self.pitchval.setObjectName(u"pitchval")
@@ -279,7 +285,12 @@ class Ui_voicemode(object):
         self.pitch_volume_hs.setObjectName(u"pitch_volume_hs")
         self.pitch_volume_hs.setGeometry(QtCore.QRect(20, 150, 361, 22))
         self.pitch_volume_hs.setOrientation(QtCore.Qt.Horizontal)
+        self.pitch_volume_hs.setMaximum(200)
         self.pitch_volume_hs.hide()
+        self.applyvoicechanger = QtWidgets.QPushButton(self.voicechanger_tb)
+        self.applyvoicechanger.setObjectName(u"applyvoicechanger")
+        self.applyvoicechanger.setGeometry(QtCore.QRect(10, 400, 181, 23))
+        self.applyvoicechanger.clicked.connect(self.applyvoicechanger_clk)
         #self.showpitchchangersettings()
         self.tabWidget.addTab(self.voicechanger_tb, "")
 
@@ -393,10 +404,29 @@ class Ui_voicemode(object):
             self.soundboardvolumeslider.setValue(soundboardvolume[0])
         except:
             pass   
-        
+        try:
+            self.pitch_volume_hs.setValue(pitchvolume[0])
+            self.pitch_volume.setText("Pitch volume "+ str(pitchvolume[0]))
+        except:
+            pass
+        try:
+            self.pitchval_hs.setValue(pitchvolume[0])
+            self.pitchval.setText("Pitch "+ str(pitch[0]))
+        except:
+            pass
+        try:
+            if pitchshift[0] == 0:
+                self.setlistwidgtitemcheckstate("Pitch Shift",False)
+            elif pitchshift[0] == 2:
+                self.setlistwidgtitemcheckstate("Pitch Shift",True)
+        except:
+            pass
+
         self.overridesoudboardvolume.stateChanged.connect(self.setoverridesoudboarvolumedval)
         self.soundboardvolumeslider.valueChanged.connect(self.setsoundboardvolumeval)
         self.horizontalSlider.valueChanged.connect(self.sethearmyselfvolumeval)
+        self.pitchval_hs.valueChanged.connect(self.setpitchval)
+        self.pitch_volume_hs.valueChanged.connect(self.setpitchvolumeval)
         self.sampelrate.setText('hear my self volume '+str(self.horizontalSlider.value()))    
         self.hearmyselfdevice.currentTextChanged.connect(self.sethearmyselfdeviceval)   
         self.inputdevice.currentTextChanged.connect(self.setindeviceindexfunc)  
@@ -450,7 +480,9 @@ class Ui_voicemode(object):
             self.settingval.setValue("overridesoundboardvolume",0)
             self.settingval.setValue("soundboardvolume",100)
             self.settingval.setValue("pitchvolume",100)
-            
+            self.settingval.setValue("pitch",100)
+            self.settingval.setValue("pitchshift",0)
+
         elif len(settingkeylist)==0:
             print("set def val")
             self.settingval.setValue("audio path",userpath+"/Music")
@@ -462,6 +494,8 @@ class Ui_voicemode(object):
             self.settingval.setValue("overridesoundboardvolume",0)
             self.settingval.setValue("soundboardvolume",100)
             self.settingval.setValue("pitchvolume",100)
+            self.settingval.setValue("pitch",100)
+            self.settingval.setValue("pitchshift",0)
 
     def getsettingvals(self):
         self.settingval = QSettings("Dragon Voide Mode","settings vals")
@@ -473,6 +507,9 @@ class Ui_voicemode(object):
         hearmyselfvolume[0] = self.settingval.value("hearmyselfvolume")
         overridesoundboardvolume[0] = self.settingval.value("overridesoundboardvolume")
         soundboardvolume[0] = self.settingval.value("soundboardvolume")
+        pitchvolume[0] = self.settingval.value("pitchvolume")
+        pitch[0] = self.settingval.value("pitch")
+        pitchshift[0] = self.settingval.value("pitchshift")
 
     def setsettingvals(self):
         self.settingval = QSettings("Dragon Voide Mode","settings vals")
@@ -699,6 +736,39 @@ class Ui_voicemode(object):
         self.pitch_volume.show()
         self.pitch_volume_hs.show()
 
+    def setpitchvolumeval(self):
+        pitchvolume[0] = self.pitch_volume_hs.value()
+        self.settingval.setValue("pitchvolume",self.pitch_volume_hs.value())
+        self.pitch_volume.setText("Pitch volume "+ str(pitchvolume[0]))
+
+    def setpitchval(self):
+        pitch[0] = self.pitchval_hs.value()
+        self.settingval.setValue("pitch",self.pitchval_hs.value())
+        self.pitch_volume.setText("Pitch "+ str(pitchvolume[0]))
+
+    def getischeckedfromlistwdgt(self,itemstr):
+        item = self.voicechangerlist.item(0)
+        if item.checkState() != QtCore.Qt.Checked:
+            return 2
+        else:
+            return 0     
+
+    def setlistwidgtitemcheckstate(self,itemstr,state = False):
+        item = self.voicechangerlist.findItems(itemstr)
+        if state == True:
+            item[0].setCheckState(QtCore.Qt.Checked)
+        else:
+            item[0].setCheckState(QtCore.Qt.Checked(False))
+
+    def applyvoicechanger_clk(self):
+        pitchshiftstate = self.getischeckedfromlistwdgt("Pitch Shift")
+        if pitchshiftstate  == 2:
+            self.settingval.setValue("pitchshift",2)
+        else:
+            self.settingval.setValue("pitchshift",0)    
+            
+
+
     def retranslateUi(self, voicemode):
         _translate = QtCore.QCoreApplication.translate
         voicemode.setWindowTitle(_translate("voicemode", "DRAGON VOICE MODE"))
@@ -730,6 +800,7 @@ class Ui_voicemode(object):
         ___qlistwidgetitem.setText(_translate("voicemode", u"Pitch Shift", None));
         self.voicechangerlist.setSortingEnabled(__sortingEnabled)
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.voicechanger_tb), _translate("voicemode", u"voice changer", None))
+        self.applyvoicechanger.setText(_translate("voicemode", u"Apply", None))
         try:    
             self.note.setText(_translate("voicemode", u"still in devolopment", None))
             self.pitchval.setText(_translate("voicemode", u"Pitch", None))
