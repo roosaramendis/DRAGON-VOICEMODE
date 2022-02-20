@@ -1,5 +1,7 @@
 # DRAGON-VOICEMODE
 
+[![Github All Releases](https://img.shields.io/github/downloads/roosaramendis/DRAGON-VOICEMODE/total.svg)]()
+
 Dragon voice mode allows you to create keyboard shortcuts to trigger sound effects while playing games. Key shortcuts are recognized even if application is not focused . and its allows to add hotkey per audio and manage . soundboard works are mostly done about 80% of work . and it can useable and
 didnt found any critical issue s yet . but still have to do some improvement .
 voice changer is still in experiment . have to do lot of things on it .
