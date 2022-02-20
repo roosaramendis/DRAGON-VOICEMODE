@@ -69,7 +69,8 @@ global pitch
 pitch = [1]
 global pitchshift
 pitchshift = [0]
-
+global capturehkcalltimes
+capturehkcalltimes = [0]
 
 
 
@@ -112,6 +113,25 @@ class TableModel(QtCore.QAbstractTableModel):
             return len(self.datalist[0])
         except:
             pass    
+
+class capturehk_thread(QtCore.QThread):
+    capturedhk = QtCore.pyqtSignal(str)
+    def __init__(self, parent=None):
+        super(capturehk_thread,self).__init__(parent)
+    def run(self):
+        self.settingval = QSettings("Dragon Voide Mode","settings vals")
+        
+           
+        while True:
+            time.sleep(0.2)
+            capturehkcalltimes[0] += 1
+            if capturehkcalltimes[0] <2:
+                globle_key_listener.startcapture_hk_call()
+            else:    
+                self.capturedhk.emit(self.settingval.value("stophotkey"))
+            #cpturedkeylist = globle_key_listener.starcapture_hk()
+            
+
 
 class playaudio_thread(QtCore.QThread):
     
@@ -231,8 +251,15 @@ class Ui_voicemode(object):
         self.audiofileview_tb = QtWidgets.QWidget()
         self.audiofileview_tb.setObjectName(u"audiofileview_tb")
         self.listView = QtWidgets.QListView(self.audiofileview_tb)
-        self.listView.setGeometry(QtCore.QRect(20, 10, 451, 381))
+        self.listView.setGeometry(QtCore.QRect(20, 40, 451, 351))
         self.listView.setObjectName("listView")
+        self.searchinaudiofiles_le = QtWidgets.QLineEdit(self.audiofileview_tb)
+        self.searchinaudiofiles_le.setObjectName(u"searchinaudiofiles_le")
+        self.searchinaudiofiles_le.setGeometry(QtCore.QRect(20, 10, 331, 20))
+        self.searchinaudiofiles_lb = QtWidgets.QLabel(self.audiofileview_tb)
+        self.searchinaudiofiles_lb.setObjectName(u"searchinaudiofiles_lb")
+        self.searchinaudiofiles_lb.setGeometry(QtCore.QRect(370, 10, 91, 21))
+        self.searchinaudiofiles_le.textChanged.connect(self.filteraudiofiles_func)
         self.tabWidget_2.addTab(self.audiofileview_tb, "")
         self.hotkeysview_tb = QtWidgets.QWidget()
         self.hotkeysview_tb.setObjectName(u"hotkeysview_tb")
@@ -356,7 +383,14 @@ class Ui_voicemode(object):
         self.soundboardvolumeslider.setObjectName(u"soundboardvolumeslider")
         self.soundboardvolumeslider.setGeometry(QtCore.QRect(10, 220, 451, 22))
         self.soundboardvolumeslider.setMaximum(100)
-        self.soundboardvolumeslider.setOrientation(QtCore.Qt.Horizontal)   
+        self.soundboardvolumeslider.setOrientation(QtCore.Qt.Horizontal)
+        self.sethotkeytostop_lb = QtWidgets.QLabel(self.tab_2)
+        self.sethotkeytostop_lb.setObjectName(u"sethotkeytostop_lb")
+        self.sethotkeytostop_lb.setGeometry(QtCore.QRect(10, 270, 151, 21))
+        self.startcapture_hk_bt = QtWidgets.QPushButton(self.tab_2)
+        self.startcapture_hk_bt.setObjectName(u"startcapture_hk_bt")
+        self.startcapture_hk_bt.setGeometry(QtCore.QRect(210, 270, 151, 23))
+        self.startcapture_hk_bt.clicked.connect(self.startcapture_hk_bt_clk)   
         self.play = QtWidgets.QPushButton(self.soundboard)
         self.play.setObjectName(u"play")
         self.play.setGeometry(QtCore.QRect(10, 190, 41, 23))
@@ -776,6 +810,24 @@ class Ui_voicemode(object):
         else:
             self.settingval.setValue("pitchshift",0)    
             
+    def filteraudiofiles_func(self,searchstr):
+        self.filteraudiofiles = QtCore.QSortFilterProxyModel()
+        self.filteraudiofiles.setSourceModel(model)
+        self.filteraudiofiles.setFilterCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        self.filteraudiofiles.setFilterRegExp(searchstr)
+        self.listView.setModel(self.filteraudiofiles)
+
+    def startcapture_hk_bt_clk(self):
+
+        if self.startcapture_hk_bt.text() == "Start capture hotkey":
+            print("start capture")
+            self.thread5 = capturehk_thread()
+            self.thread5.start()
+            self.thread5.capturedhk.connect(self.sethotkeytostop_lb.setText)
+        elif self.startcapture_hk_bt.text() == "Stop chapture":
+            print("stop capture")
+
+
 
 
     def retranslateUi(self, voicemode):
@@ -810,6 +862,9 @@ class Ui_voicemode(object):
         self.voicechangerlist.setSortingEnabled(__sortingEnabled)
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.voicechanger_tb), _translate("voicemode", u"voice changer", None))
         self.applyvoicechanger.setText(_translate("voicemode", u"Apply", None))
+        self.searchinaudiofiles_lb.setText(_translate("voicemode", u"Search Audio File", None))
+        self.sethotkeytostop_lb.setText(_translate("voicemode", u"Set hotkey to stop audio", None))
+        self.startcapture_hk_bt.setText(_translate("voicemode", u"Start capture hotkey", None))
         try:    
             self.note.setText(_translate("voicemode", u"still in devolopment", None))
             self.pitchval.setText(_translate("voicemode", u"Pitch", None))
