@@ -128,7 +128,7 @@ class capturehk_thread(QtCore.QThread):
             if capturehkcalltimes[0] <2:
                 globle_key_listener.startcapture_hk_call()
             else:    
-                self.capturedhk.emit(self.settingval.value("stophotkey"))
+                self.capturedhk.emit(self.settingval.value("temphkey"))
             #cpturedkeylist = globle_key_listener.starcapture_hk()
             
 
@@ -227,19 +227,19 @@ class Ui_voicemode(object):
         self.showhotkey.setObjectName(u"showhotkey")
         self.showhotkey.setGeometry(QtCore.QRect(10, 250, 121, 23))
         self.showhotkey.clicked.connect(self.whenchekedlistitem)
-        self.comboBox = QtWidgets.QComboBox(self.soundboard)
+        '''self.comboBox = QtWidgets.QComboBox(self.soundboard)
         self.comboBox.setGeometry(QtCore.QRect(10, 60, 51, 22))
         self.comboBox.setObjectName("comboBox")
         self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.lineEdit = QtWidgets.QLineEdit(self.soundboard)
+        self.comboBox.addItem("")'''
+        '''self.lineEdit = QtWidgets.QLineEdit(self.soundboard)
         self.lineEdit.setGeometry(QtCore.QRect(90, 60, 41, 21))
-        self.lineEdit.setObjectName("lineEdit")
-        self.label = QtWidgets.QLabel(self.soundboard)
+        self.lineEdit.setObjectName("lineEdit")'''
+        '''self.label = QtWidgets.QLabel(self.soundboard)
         self.label.setGeometry(QtCore.QRect(70, 60, 16, 21))
-        self.label.setObjectName("label")
+        self.label.setObjectName("label")'''
         self.removehk = QtWidgets.QPushButton(self.soundboard)
-        self.removehk.setGeometry(QtCore.QRect(10, 90, 121, 41))
+        self.removehk.setGeometry(QtCore.QRect(10, 110, 121, 41))
         self.removehk.setObjectName("removehk")
         self.removehk.clicked.connect(self.removehotkey_clk)
         '''self.repeat = QtWidgets.QCheckBox(self.soundboard)
@@ -261,6 +261,14 @@ class Ui_voicemode(object):
         self.searchinaudiofiles_lb.setGeometry(QtCore.QRect(370, 10, 91, 21))
         self.searchinaudiofiles_le.textChanged.connect(self.filteraudiofiles_func)
         self.tabWidget_2.addTab(self.audiofileview_tb, "")
+        self.startcapturekeys_sb_bt = QtWidgets.QPushButton(self.soundboard)
+        self.startcapturekeys_sb_bt.setObjectName(u"startcapturekeys_sb_bt")
+        self.startcapturekeys_sb_bt.setGeometry(QtCore.QRect(10, 80, 121, 23))
+        self.startcapturekeys_sb_bt.clicked.connect(self.startcapturekeys_sb_bt_clk)
+        self.capturekey_sb_lb = QtWidgets.QLabel(self.soundboard)
+        self.capturekey_sb_lb.setObjectName(u"capturekey_sb_lb")
+        self.capturekey_sb_lb.setGeometry(QtCore.QRect(10, 55, 121, 23))
+        self.tabWidget.addTab(self.soundboard, "")
         self.hotkeysview_tb = QtWidgets.QWidget()
         self.hotkeysview_tb.setObjectName(u"hotkeysview_tb")
         self.tableView = QtWidgets.QTableView(self.hotkeysview_tb)
@@ -676,11 +684,12 @@ class Ui_voicemode(object):
         self.setsettingvals()
 
     def asinghk_clk(self):
-        hkstr = self.lineEdit.text()
+        '''hkstr = self.lineEdit.text()
         print(hkstr)
         newhklist =[modifirekeyslist[self.comboBox.currentIndex()],hkstr]
         print(newhklist)
-        newhk = newhklist[0]+"+"+newhklist[1]
+        newhk = newhklist[0]+"+"+newhklist[1]'''
+        newhk = self.capturekey_sb_lb.text()
         self.getcheckditems(model)
         hotkeydict[str(newhk)] = selectedaudios[0]
         print(hotkeydict)
@@ -823,10 +832,35 @@ class Ui_voicemode(object):
             print("start capture")
             self.thread5 = capturehk_thread()
             self.thread5.start()
+            self.thread5.setTerminationEnabled(True)
+            self.startcapture_hk_bt.setText("Stop chapture")
             self.thread5.capturedhk.connect(self.sethotkeytostop_lb.setText)
         elif self.startcapture_hk_bt.text() == "Stop chapture":
             print("stop capture")
+            try:
+                self.thread5.terminate()
+                self.settingval.setValue("stophotkey",self.sethotkeytostop_lb.text())
+                self.startcapture_hk_bt.setText("Start capture hotkey")
+            except:
+                pass  
 
+    def startcapturekeys_sb_bt_clk(self):
+    
+        if self.startcapturekeys_sb_bt.text() == "Start capture":
+            print("start capture")
+            self.thread5 = capturehk_thread()
+            self.thread5.start()
+            self.thread5.setTerminationEnabled(True)
+            self.startcapturekeys_sb_bt.setText("Stop chapture")
+            self.thread5.capturedhk.connect(self.capturekey_sb_lb.setText)
+        elif self.startcapturekeys_sb_bt.text() == "Stop chapture":
+            print("stop capture")
+            try:
+                self.thread5.terminate()
+                
+                self.startcapture_hk_bt.setText("Start capture")
+            except:
+                pass        
 
 
 
@@ -834,9 +868,9 @@ class Ui_voicemode(object):
         _translate = QtCore.QCoreApplication.translate
         voicemode.setWindowTitle(_translate("voicemode", "DRAGON VOICE MODE"))
         self.asinghk.setText(_translate("voicemode", "Add Hot Key"))
-        self.comboBox.setItemText(1, _translate("voicemode", "alt_r"))
+        '''self.comboBox.setItemText(1, _translate("voicemode", "alt_r"))
         self.comboBox.setItemText(0, _translate("voicemode", "alt_l"))
-        self.label.setText(_translate("voicemode", "+"))
+        self.label.setText(_translate("voicemode", "+"))'''
         self.removehk.setText(_translate("voicemode", "Remove Hot Key"))
         #self.repeat.setText(_translate("voicemode", "repeat"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.soundboard), _translate("voicemode", "Sound Board"))
@@ -865,6 +899,8 @@ class Ui_voicemode(object):
         self.searchinaudiofiles_lb.setText(_translate("voicemode", u"Search Audio File", None))
         self.sethotkeytostop_lb.setText(_translate("voicemode", u"Set hotkey to stop audio", None))
         self.startcapture_hk_bt.setText(_translate("voicemode", u"Start capture hotkey", None))
+        self.startcapturekeys_sb_bt.setText(_translate("voicemode", u"Start capture", None))
+        self.capturekey_sb_lb.setText(_translate("voicemode", u"Start capture hot key", None))
         try:    
             self.note.setText(_translate("voicemode", u"still in devolopment", None))
             self.pitchval.setText(_translate("voicemode", u"Pitch", None))

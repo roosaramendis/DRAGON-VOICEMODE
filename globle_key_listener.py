@@ -322,7 +322,7 @@ def starcapture_hk():
             captrdkey = hkey[0]+"+"+hkey[1]
         elif len(hkey) == 1:
             captrdkey = hkey[0]        
-        settingval.setValue("stophotkey",captrdkey.replace("'",""))
+        settingval.setValue("temphkey",captrdkey.replace("'",""))
         print(captrdkey)
 
     def on_press(key):
