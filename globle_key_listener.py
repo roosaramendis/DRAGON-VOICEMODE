@@ -1,5 +1,6 @@
 from tkinter import EXCEPTION
 from tracemalloc import stop
+from turtle import st
 from pynput.keyboard import Key, Listener
 import pynput
 import audio
@@ -11,10 +12,13 @@ import threading
 from PyQt5.QtCore import QSettings
 
 global modifirekeys
-modifirekeys = ["Key.alt_l","Key.alt_gr"]
+modifirekeys = ["Key.alt_l","Key.alt_gr","Key.ctrl_l","Key.shift","Key.ctrl_r","Key.shift_r"]
 currentkey = []
 currentkey1 = []
+currentreleaskey1 = []
 currentreleaskey = []
+currentkey_sa = [] #for use in stop audio hotkey
+currentreleaskey_sa = [] #for use in stop audio hotkey
 global calledtimes
 calledtimes = [0]
 global workdone
@@ -172,7 +176,13 @@ def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
         print(pressedkey)
         calledtimes[0] +=1
         if calledtimes[0] < 2:
-            afilename = hotkeydict[pressedkey]
+            if len(pressedkey)>2:
+                pressedkeystr = pressedkey[0]+"+"+pressedkey[1]+"+"+pressedkey[2].replace("'","")
+            elif len(pressedkey)>1:
+                pressedkeystr = pressedkey[0]+"+"+pressedkey[1].replace("'","")
+            elif len(pressedkey) == 1:
+                pressedkeystr = pressedkey[0].replace("'","")
+            afilename = hotkeydict[pressedkeystr]
             print(volume)
             audio.playaudio_class().playaudio(filename=afilename,deviceindex=selecteddiviceinderx,chunksize=1024,volume=volume)
         else:
@@ -185,18 +195,58 @@ def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
     def on_press(key):
         strkey = str(key)
         print(strkey)
-        if str(key) in ["Key.alt_l","Key.alt_gr","Key.ctrl_l","Key.shift"]:
-            currentkey.append(str(key))
-            if len(currentkey)>1:
-                if str(key)!=currentkey[0] and str(key) in ["Key.alt_l","Key.alt_gr","Key.ctrl_l","Key.shift"] and len(currentkey)<2:
-                    currentkey.append(str(key))
-                    print(currentkey)
 
-                '''else:
-                    print(currentkey)
-                    currentkey.clear()'''    
-            else:
-                print(currentkey)
+        print(strkey)
+
+        try:
+            if not(re.search("Key.",str(key))):
+                print(keyboardnumbers)
+                if not(str(key).replace("'","") in keyboardnumbers):
+                    print(str(key))
+                    formatedkeyhex = str(key).replace("'\\x","")
+                    formatedkeyhex = formatedkeyhex.replace("'","")
+                    print(formatedkeyhex)
+                    print(int(formatedkeyhex, 16))
+                    keyindex = int(formatedkeyhex, 16)
+                    if keyindex < 27:
+                        print('{0} pressed'.format(
+                        alphabet[keyindex-1]))
+                        strkey = str(alphabet[keyindex-1])
+        except Exception as e:
+            print(e)
+            print('{0} pressed'.format(
+            key))    
+            strkey = str(key)
+        try:
+            if strkey in modifirekeys and not(len(currentkey)-1 == strkey):
+                print("if true")
+                currentkey.append(strkey)
+            if len(currentkey)>=1:
+                if strkey!=currentkey[0] and strkey in modifirekeys and len(currentkey)<2:
+                    currentkey.append(strkey)
+                    print(currentkey)   
+                else:
+                    print("sssssss")
+                    
+                    if len(currentkey)>1:
+                        if strkey!=currentkey[1] and strkey in modifirekeys and len(currentkey)<2 and not(strkey in currentkey):
+                            currentkey.append(strkey)
+                            print(currentkey)
+                        else:
+                            print("sssssss2")
+                            if not(strkey in currentkey):
+                                currentkey.append(strkey)     
+                    elif currentkey[0] != strkey:
+                        currentkey.append(strkey)
+                    #currentkey1.append(strkey)
+            elif currentkey[0] != strkey:
+                currentkey.append(strkey)
+
+            print(currentkey)
+            print("onhere")
+        except:
+            pass
+
 
     def on_release(key):
         print('{0} release'.format(
@@ -204,14 +254,23 @@ def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
         settingval = QSettings("Dragon Voide Mode","settings vals")
         on_releasetimes[0] += 1
         print(str(currentkey)+"onreleasss")
-        currentreleaskey.append(str(key))
+        if len(currentkey) >1:
+            try:
+                print(currentkey[0]+"+"+str(currentkey[1]).replace("'",""))
+                callplayaudio(currentkey)
+                print(str(currentkey)+"on releas22")
+                #return currentkey    
+                currentkey.clear()
+            except:
+                pass
+        '''currentreleaskey.append(str(key))
         try:
             if len(currentreleaskey)>0:
-                if not(currentreleaskey[len(currentreleaskey)-1] in ["Key.alt_l","Key.alt_gr","Key.ctrl_l","Key.shift"]):
+                if not(currentreleaskey[len(currentreleaskey)-1] in modifirekeys):
 
                     if len(currentkey) > 0:
                         print('ok')
-                        if currentkey[0] in ["Key.alt_l","Key.alt_gr","Key.ctrl_l","Key.shift"] and len(currentkey)<2:
+                        if currentkey[0] in modifirekeys and len(currentkey)<2:
                             currentkey.append(str(key))
                             print(currentkey)
                             print('1')
@@ -228,7 +287,7 @@ def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
 
                             currentkey.clear()
                             currentreleaskey.clear()
-                        elif currentkey[1] in ["Key.alt_l","Key.alt_gr","Key.ctrl_l","Key.shift"] and len(currentkey)<3:
+                        elif currentkey[1] in modifirekeys and len(currentkey)<3:
                             currentkey.append(str(key))
                             print(currentkey)
                             print('2')
@@ -249,62 +308,15 @@ def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
                             currentkey.clear()
                             currentreleaskey.clear()
                     if len(currentkey)!=0:        
-                        if not(currentkey[len(currentkey)-1] in ["Key.alt_l","Key.alt_gr","Key.ctrl_l","Key.shift"]):
+                        if not(currentkey[len(currentkey)-1] in modifirekeys):
                             print(currentkey)
                             print('3')
                         else:
                             currentkey.clear()
                             currentreleaskey.clear() 
         except Exception as e:
-            print(e)                            
-        '''try:
-            if currentkey[0] in ["Key.alt_l","Key.alt_gr","Key.ctrl_l","Key.shift"]:
-                print("must be have second or more keys")
-                if len(currentkey)>1:
-                    if currentkey[1] in ["Key.alt_l","Key.alt_gr","Key.ctrl_l","Key.shift"]:
-                        print("must be have another key1")
-                        if currentkey[1] == currentkey[0]:
-                            print(currentkey)
-                            currentkey.clear()
-                        if len(currentkey)>2:
-                            if currentkey[2] in ["Key.alt_l","Key.alt_gr","Key.ctrl_l","Key.shift"]:
-                                print("must be have another key2")
-                                if currentkey[2] == currentkey[0] or currentkey[2] == currentkey[1] :
-                                    print(currentkey)
-                                    currentkey.clear()
-                            else:
-                                print(str(currentkey)+" is valid n ready to use")
-                                for i in hotkeydict.keys():
-                                    if currentkey[0]+"+"+str(currentkey[1])+"+"+currentkey[2].replace("'","") == i:
-                                        print("play audio of key "+str(i))
-                                        callplayaudio(str(i))
-                                if currentkey[0]+"+"+str(currentkey[1])+"+"+currentkey[2].replace("'","") == settingval.value("stophotkey"):
-                                    print("stop")
-                                    currentkey.clear()
-                                else:
-                                    currentkey.clear()              
-                                currentkey.clear()
-                                #currentkey.clear()
-
-                    else:
-                        print(str(currentkey)+" is valid n ready to use")
-                        for i in hotkeydict.keys():
-                            if currentkey[0]+"+"+str(currentkey[1]).replace("'","") == i:
-                                print("play audio of key "+str(i))
-                                callplayaudio(str(i))    
-                        if currentkey[0]+"+"+str(currentkey[1]).replace("'","") == settingval.value("stophotkey"):
-                            print("stop")
-                            currentkey.clear()
-                        else:
-                            currentkey.clear()     
-                        currentkey.clear()
-
-                               
-            else:
-                currentkey.clear()
-        except Exception as e:
-            print(e)
-            currentkey.clear() '''       
+            print(e)'''                            
+    
     # Collect events until released
     print(str(hotkeydict))
     with Listener(
@@ -327,7 +339,9 @@ def starcapture_hk():
 
     def on_press(key):
         strkey = str(key)
-        '''try:
+        print(strkey)
+
+        try:
             if not(re.search("Key.",str(key))):
                 print(keyboardnumbers)
                 if not(str(key).replace("'","") in keyboardnumbers):
@@ -346,40 +360,54 @@ def starcapture_hk():
             print('{0} pressed'.format(
             key))    
             strkey = str(key)
-        
-        currentkey1.append(strkey)   
-        print(currentkey1)
-        
-        if currentkey1[0] in ["Key.alt_l","Key.alt_gr","Key.ctrl_l"]:
-            print("must be have second or more keys") 
-            if strkey != currentkey1[0] and len(currentkey1) <2:
+        try:
+            if strkey in modifirekeys and not(len(currentkey1)-1 == strkey):
+                print("if true")
                 currentkey1.append(strkey)
-        else:
-            currentkey1.clear()
-            currentkey1.append(strkey)        
-        print(str(currentkey1)+"on press") '''   
+            if len(currentkey1)>=1:
+                if strkey!=currentkey1[0] and strkey in modifirekeys and len(currentkey1)<2:
+                    currentkey1.append(strkey)
+                    print(currentkey1)   
+                else:
+                    print("sssssss")
+                    
+                    if len(currentkey1)>1:
+                        if strkey!=currentkey1[1] and strkey in modifirekeys and len(currentkey1)<2 and not(strkey in currentkey1):
+                            currentkey1.append(strkey)
+                            print(currentkey1)
+                        else:
+                            print("sssssss2")
+                            if not(strkey in currentkey1):
+                                currentkey1.append(strkey)     
+                    elif currentkey1[0] != strkey:
+                        currentkey1.append(strkey)
+                    #currentkey1.append(strkey)
+            elif currentkey1[0] != strkey:
+                currentkey1.append(strkey)
+
+            print(currentkey1)
+            print("onhere")
+        except:
+            pass
+
+
     def on_release(key):
         print('{0} release'.format(
             key))
+        settingval = QSettings("Dragon Voide Mode","settings vals")
         on_releasetimes[0] += 1
-        currentkey1.append(str(key))
-        if currentkey1[0] in ["Key.alt_l","Key.alt_gr","Key.ctrl_l","Key.shift"]:
-            print("must be have second or more keys")
-            if len(currentkey1)>1:
-                if currentkey1[1] in ["Key.alt_l","Key.alt_gr","Key.ctrl_l","Key.shift"]:
-                    print("must be have anothre key")
-                    if len(currentkey1)>2:
-                        if currentkey1[2] in ["Key.alt_l","Key.alt_gr","Key.ctrl_l","Key.shift"]:
-                            print("must be have anothre key")
-                        else:
-                            print(str(currentkey1)+" is valid n ready to use")
-                            setstophk(currentkey1)
-                            currentkey1.clear()
-
-                else:
-                    print(str(currentkey1)+" is valid n ready to use")
-                    setstophk(currentkey1)
-                    currentkey1.clear()        
+        print(str(currentkey1)+"onreleasss11")
+        currentreleaskey1.append(str(key))
+        if len(currentkey1) >1:
+            try:
+                print(currentkey1[0]+"+"+str(currentkey1[1]).replace("'",""))
+                setstophk(currentkey1)
+                print(str(currentkey1)+"on releas22")
+                #return currentkey    
+                currentkey1.clear()
+            except:
+                pass
+       
 
 
     # Collect events until released
@@ -388,6 +416,105 @@ def starcapture_hk():
             on_release=on_release) as listener:
         listener.join()
 
+def starlistenerforstopaudio():
+    
+    def stopaudio_call(hkey):
+        settingval = QSettings("Dragon Voide Mode","settings vals")
+        if len(hkey)>2:
+            captrdkey = hkey[0]+"+"+hkey[1]+"+"+hkey[2]
+        elif len(hkey)>1:
+            captrdkey = hkey[0]+"+"+hkey[1]
+        elif len(hkey) == 1:
+            captrdkey = hkey[0]
+        if captrdkey in settingval.value("stophotkey"):    
+            stopaudio()    
+    def stopaudio():
+        audio.stopplaying()
+
+
+
+
+    def on_press(key):
+        strkey = str(key)
+        print(strkey)
+
+        try:
+            if not(re.search("Key.",str(key))):
+                print(keyboardnumbers)
+                if not(str(key).replace("'","") in keyboardnumbers):
+                    print(str(key))
+                    formatedkeyhex = str(key).replace("'\\x","")
+                    formatedkeyhex = formatedkeyhex.replace("'","")
+                    print(formatedkeyhex)
+                    print(int(formatedkeyhex, 16))
+                    keyindex = int(formatedkeyhex, 16)
+                    if keyindex < 27:
+                        print('{0} pressed'.format(
+                        alphabet[keyindex-1]))
+                        strkey = str(alphabet[keyindex-1])
+        except Exception as e:
+            print(e)
+            print('{0} pressed'.format(
+            key))    
+            strkey = str(key)
+        try:
+            if strkey in modifirekeys and not(len(currentkey_sa)-1 == strkey):
+                print("if true")
+                currentkey_sa.append(strkey)
+            if len(currentkey_sa)>=1:
+                if strkey!=currentkey_sa[0] and strkey in modifirekeys and len(currentkey_sa)<2:
+                    currentkey_sa.append(strkey)
+                    print(currentkey_sa)   
+                else:
+                    print("sssssss")
+                    
+                    if len(currentkey_sa)>1:
+                        if strkey!=currentkey_sa[1] and strkey in modifirekeys and len(currentkey_sa)<2 and not(strkey in currentkey_sa):
+                            currentkey_sa.append(strkey)
+                            print(currentkey_sa)
+                        else:
+                            print("sssssss2")
+                            if not(strkey in currentkey_sa):
+                                currentkey_sa.append(strkey)     
+                    elif currentkey_sa[0] != strkey:
+                        currentkey_sa.append(strkey)
+                    #currentkey1.append(strkey)
+            elif currentkey_sa[0] != strkey:
+                currentkey_sa.append(strkey)
+
+            print(currentkey_sa)
+            print("onhere")
+        except:
+            pass
+
+    def on_release(key):
+        print('{0} release'.format(
+            key))
+        settingval = QSettings("Dragon Voide Mode","settings vals")
+        on_releasetimes[0] += 1
+        print(str(currentkey_sa)+"onreleasss")
+        currentreleaskey_sa.append(str(key))
+        if len(currentkey_sa) >1:
+            try:
+                print(currentkey[0]+"+"+str(currentkey[1]).replace("'",""))
+                stopaudio_call(currentkey_sa)
+                print(str(currentkey_sa)+"on releas22")
+                #return currentkey    
+                currentkey_sa.clear()
+            except:
+                pass
+    # Collect events until released
+
+    with Listener(
+            on_press=on_press,
+            on_release=on_release) as listener:
+        listener.join()
+        
+
 def startcapture_hk_call():
     t1 = threading.Thread(target=starcapture_hk)
+    t1.start()
+
+def starlistenerforstopaudio_call():
+    t1 = threading.Thread(target=starlistenerforstopaudio)
     t1.start()

@@ -71,7 +71,8 @@ global pitchshift
 pitchshift = [0]
 global capturehkcalltimes
 capturehkcalltimes = [0]
-
+global keyboardlistenerto_stopaudiocalledtimes
+keyboardlistenerto_stopaudiocalledtimes = [0]
 
 
 
@@ -131,7 +132,30 @@ class capturehk_thread(QtCore.QThread):
                 self.capturedhk.emit(self.settingval.value("temphkey"))
             #cpturedkeylist = globle_key_listener.starcapture_hk()
             
+class keyboardlistenerto_stopaudio_thread(QtCore.QThread):
+    
+    def __init__(self,parent=None):
+        super(keyboardlistenerto_stopaudio_thread,self).__init__(parent)
 
+    def run(self):
+        
+        while True:
+            time.sleep(0.5)
+            #print(str(audio.playaudio_class().getisaudioplaying())+" in while")
+            if audio.playaudio_class().getisaudioplaying() == True:
+                keyboardlistenerto_stopaudiocalledtimes[0] += 1
+                print("waiting for stop key") 
+                if keyboardlistenerto_stopaudiocalledtimes[0] <2: 
+                    try:
+                        globle_key_listener.starlistenerforstopaudio_call()
+                    except:
+                        print("print err") 
+            else:            
+                keyboardlistenerto_stopaudiocalledtimes[0] = 0
+                #print(str(hearituselfcalledtimes[0])+"hearituself called times")
+                '''stopstreaminmicintoout[0] = True
+                mic_to_output.stopmictoinput()'''
+                #self.suicidefunc.emit("terminate")
 
 class playaudio_thread(QtCore.QThread):
     
@@ -482,8 +506,13 @@ class Ui_voicemode(object):
         self.hotkeylistenercall()
         self.mictooutputcall()
         self.hearituself()
+        self.keyboardlistenerto_stopaudio_call()
         QtCore.QMetaObject.connectSlotsByName(voicemode)
 
+
+    def keyboardlistenerto_stopaudio_call(self):
+        self.thread6 = keyboardlistenerto_stopaudio_thread()
+        self.thread6.start()
 
     def hearituself(self):
         if overridehearuselfdevice[0] == 2:
@@ -851,14 +880,16 @@ class Ui_voicemode(object):
             self.thread5 = capturehk_thread()
             self.thread5.start()
             self.thread5.setTerminationEnabled(True)
-            self.startcapturekeys_sb_bt.setText("Stop chapture")
+            self.startcapturekeys_sb_bt.setText("Stop capture")
             self.thread5.capturedhk.connect(self.capturekey_sb_lb.setText)
-        elif self.startcapturekeys_sb_bt.text() == "Stop chapture":
+        elif self.startcapturekeys_sb_bt.text() == "Stop capture":
             print("stop capture")
+            self.startcapture_hk_bt.setText("Start capture")
             try:
+                self.startcapture_hk_bt.setText("Start capture")
                 self.thread5.terminate()
                 
-                self.startcapture_hk_bt.setText("Start capture")
+                
             except:
                 pass        
 
