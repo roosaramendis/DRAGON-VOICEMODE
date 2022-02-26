@@ -20,7 +20,7 @@ fist you need to set input device to your microphone
 then you need to select virtual audio device input as output device in software.i recomend to use vb cable as your virtual
 device this images showing how to set up with vb cable. but if you have any other audio device you can use that 
 
-[![step 1](https://github.com/roosaramendis/DRAGON-VOICEMODE/blob/voice-changer/preview_images/step%201.png)]()
+[![step 1](https://github.com/roosaramendis/DRAGON-VOICEMODE/blob/voice-changer/preview_images/step%202.png)]()
 
 after that you have to set your input audio divice from windows settings to virtual audio device output as your input device the you can set other softwares or games input device as default. if you dont like to change windows settings
 you can set it to only on game or software what you need to use 
