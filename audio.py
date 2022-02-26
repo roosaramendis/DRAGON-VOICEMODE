@@ -38,14 +38,12 @@ class playaudio_class:
         self.p = pyaudio.PyAudio()
         for i in range(self.p.get_device_count()):
             print (self.p.get_device_info_by_index(i).get('name'))
-        #filename = "life line mf.wav"
+        
         
         # Defines a chunk size of 1024 samples per data frame.
         chunk = chunksize 
         
-        # Open sound file  in read binary form.
-        #self.file = wave.open(filename, 'rb')
-        #self.file = AudioSegment.from_mp3()
+
         a, fr ,asg = self.audio_file_to_np_array(filename)
         dvc = deviceindex  # Index of an OUTPUT device (from sd.query_devices() on YOUR machine)
         sd.default.device = dvc  # Change default OUTPUT device
@@ -65,17 +63,7 @@ class playaudio_class:
         isaudioplaying[0] = False
         voice_mode_ui.setisaudioplaying(False)
         globle_key_listener.itwasdone(True)
-
-    
-        '''def callback(outdata, frames, time, status):
-            if status:
-                print(a)
-            outdata[:] = a
-        with sd.OutputStream(
-                samplerate=fr, device=deviceindex, channels=asg.channels,
-                callback=callback):
-            while sd.Stream.active:
-                time.sleep(0.02)  '''  
+ 
         
         
         

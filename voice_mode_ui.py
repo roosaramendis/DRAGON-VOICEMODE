@@ -63,9 +63,16 @@ global overridesoundboardvolume
 overridesoundboardvolume = [0]
 global soundboardvolume
 soundboardvolume = [1]
-
-
-
+global pitchvolume
+pitchvolume = [1]
+global pitch
+pitch = [1]
+global pitchshift
+pitchshift = [0]
+global capturehkcalltimes
+capturehkcalltimes = [0]
+global keyboardlistenerto_stopaudiocalledtimes
+keyboardlistenerto_stopaudiocalledtimes = [0]
 
 
 
@@ -78,6 +85,77 @@ def getstopstreaminmicintoout():
     print(stopstreaminmicintoout[0])
     return stopstreaminmicintoout[0]
 
+class TableModel(QtCore.QAbstractTableModel):
+    
+    def __init__(self, data):
+        super(TableModel, self).__init__()
+        self._data = data
+
+    def data(self, index, role):
+        if role == QtCore.Qt.DisplayRole:
+            
+            return self.datalist[index.row()][index.column()]
+
+    def rowCount(self, index):
+        try:
+            self.keylist =[]
+            self.vallist = []
+            self.datalist = []
+            for i in self._data.keys():
+                self.keylist.append(i)
+                self.vallist.append(self._data.get(i))
+                dl = (str(self._data.get(i)),str(i))
+                self.datalist.append(dl)
+            return len(self.datalist)
+        except:
+            pass
+    def columnCount(self, index):
+        try:
+            return len(self.datalist[0])
+        except:
+            pass    
+
+class capturehk_thread(QtCore.QThread):
+    capturedhk = QtCore.pyqtSignal(str)
+    def __init__(self, parent=None):
+        super(capturehk_thread,self).__init__(parent)
+    def run(self):
+        self.settingval = QSettings("Dragon Voide Mode","settings vals")
+        
+           
+        while True:
+            time.sleep(0.2)
+            capturehkcalltimes[0] += 1
+            if capturehkcalltimes[0] <2:
+                globle_key_listener.startcapture_hk_call()
+            else:    
+                self.capturedhk.emit(self.settingval.value("temphkey"))
+            #cpturedkeylist = globle_key_listener.starcapture_hk()
+            
+class keyboardlistenerto_stopaudio_thread(QtCore.QThread):
+    
+    def __init__(self,parent=None):
+        super(keyboardlistenerto_stopaudio_thread,self).__init__(parent)
+
+    def run(self):
+        
+        while True:
+            time.sleep(0.5)
+            #print(str(audio.playaudio_class().getisaudioplaying())+" in while")
+            if audio.playaudio_class().getisaudioplaying() == True:
+                keyboardlistenerto_stopaudiocalledtimes[0] += 1
+                print("waiting for stop key") 
+                if keyboardlistenerto_stopaudiocalledtimes[0] <2: 
+                    try:
+                        globle_key_listener.starlistenerforstopaudio_call()
+                    except:
+                        print("print err") 
+            else:            
+                keyboardlistenerto_stopaudiocalledtimes[0] = 0
+                #print(str(hearituselfcalledtimes[0])+"hearituself called times")
+                '''stopstreaminmicintoout[0] = True
+                mic_to_output.stopmictoinput()'''
+                #self.suicidefunc.emit("terminate")
 
 class playaudio_thread(QtCore.QThread):
     
@@ -173,27 +251,54 @@ class Ui_voicemode(object):
         self.showhotkey.setObjectName(u"showhotkey")
         self.showhotkey.setGeometry(QtCore.QRect(10, 250, 121, 23))
         self.showhotkey.clicked.connect(self.whenchekedlistitem)
-        self.comboBox = QtWidgets.QComboBox(self.soundboard)
+        '''self.comboBox = QtWidgets.QComboBox(self.soundboard)
         self.comboBox.setGeometry(QtCore.QRect(10, 60, 51, 22))
         self.comboBox.setObjectName("comboBox")
         self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.lineEdit = QtWidgets.QLineEdit(self.soundboard)
+        self.comboBox.addItem("")'''
+        '''self.lineEdit = QtWidgets.QLineEdit(self.soundboard)
         self.lineEdit.setGeometry(QtCore.QRect(90, 60, 41, 21))
-        self.lineEdit.setObjectName("lineEdit")
-        self.label = QtWidgets.QLabel(self.soundboard)
+        self.lineEdit.setObjectName("lineEdit")'''
+        '''self.label = QtWidgets.QLabel(self.soundboard)
         self.label.setGeometry(QtCore.QRect(70, 60, 16, 21))
-        self.label.setObjectName("label")
+        self.label.setObjectName("label")'''
         self.removehk = QtWidgets.QPushButton(self.soundboard)
-        self.removehk.setGeometry(QtCore.QRect(10, 90, 121, 41))
+        self.removehk.setGeometry(QtCore.QRect(10, 110, 121, 41))
         self.removehk.setObjectName("removehk")
         self.removehk.clicked.connect(self.removehotkey_clk)
-        self.repeat = QtWidgets.QCheckBox(self.soundboard)
+        '''self.repeat = QtWidgets.QCheckBox(self.soundboard)
         self.repeat.setGeometry(QtCore.QRect(10, 140, 101, 17))
-        self.repeat.setObjectName("repeat")
-        self.listView = QtWidgets.QListView(self.soundboard)
-        self.listView.setGeometry(QtCore.QRect(180, 10, 450, 400))
+        self.repeat.setObjectName("repeat")'''
+        self.tabWidget_2 = QtWidgets.QTabWidget(self.soundboard)
+        self.tabWidget_2.setObjectName(u"tabWidget_2")
+        self.tabWidget_2.setGeometry(QtCore.QRect(150, 10, 481, 431))
+        self.audiofileview_tb = QtWidgets.QWidget()
+        self.audiofileview_tb.setObjectName(u"audiofileview_tb")
+        self.listView = QtWidgets.QListView(self.audiofileview_tb)
+        self.listView.setGeometry(QtCore.QRect(20, 40, 451, 351))
         self.listView.setObjectName("listView")
+        self.searchinaudiofiles_le = QtWidgets.QLineEdit(self.audiofileview_tb)
+        self.searchinaudiofiles_le.setObjectName(u"searchinaudiofiles_le")
+        self.searchinaudiofiles_le.setGeometry(QtCore.QRect(20, 10, 331, 20))
+        self.searchinaudiofiles_lb = QtWidgets.QLabel(self.audiofileview_tb)
+        self.searchinaudiofiles_lb.setObjectName(u"searchinaudiofiles_lb")
+        self.searchinaudiofiles_lb.setGeometry(QtCore.QRect(370, 10, 91, 21))
+        self.searchinaudiofiles_le.textChanged.connect(self.filteraudiofiles_func)
+        self.tabWidget_2.addTab(self.audiofileview_tb, "")
+        self.startcapturekeys_sb_bt = QtWidgets.QPushButton(self.soundboard)
+        self.startcapturekeys_sb_bt.setObjectName(u"startcapturekeys_sb_bt")
+        self.startcapturekeys_sb_bt.setGeometry(QtCore.QRect(10, 80, 121, 23))
+        self.startcapturekeys_sb_bt.clicked.connect(self.startcapturekeys_sb_bt_clk)
+        self.capturekey_sb_lb = QtWidgets.QLabel(self.soundboard)
+        self.capturekey_sb_lb.setObjectName(u"capturekey_sb_lb")
+        self.capturekey_sb_lb.setGeometry(QtCore.QRect(10, 55, 121, 23))
+        self.tabWidget.addTab(self.soundboard, "")
+        self.hotkeysview_tb = QtWidgets.QWidget()
+        self.hotkeysview_tb.setObjectName(u"hotkeysview_tb")
+        self.tableView = QtWidgets.QTableView(self.hotkeysview_tb)
+        self.tableView.setObjectName(u"tableView")
+        self.tableView.setGeometry(QtCore.QRect(10, 10, 461, 381))
+        self.tabWidget_2.addTab(self.hotkeysview_tb, "")
         self.refreshlist = QtWidgets.QPushButton(self.soundboard)
         self.refreshlist.setObjectName(u"refreshlist")
         self.refreshlist.setGeometry(QtCore.QRect(10, 160, 121, 23))
@@ -201,6 +306,59 @@ class Ui_voicemode(object):
         self.tabWidget.addTab(self.soundboard, "")
         self.tab_2 = QtWidgets.QWidget()
         self.tab_2.setObjectName("tab_2")
+        # -------------voice changer ui ----------------------------------------------------
+        self.voicechanger_tb = QtWidgets.QWidget()
+        self.voicechanger_tb.setObjectName(u"voicechanger_tb")
+        self.voicechangerlist = QtWidgets.QListWidget(self.voicechanger_tb)
+        __qlistwidgetitem = QtWidgets.QListWidgetItem(self.voicechangerlist)
+        __qlistwidgetitem.setCheckState(QtCore.Qt.Checked);
+        __qlistwidgetitem.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsUserCheckable|QtCore.Qt.ItemIsEnabled);
+        self.voicechangerlist.setObjectName(u"voicechangerlist")
+        self.voicechangerlist.setGeometry(QtCore.QRect(10, 10, 181, 381))
+        self.selectionmodel = self.voicechangerlist.selectionModel()
+        self.selectionmodel.selectionChanged.connect(self.showpitchchangersettings)
+        #self.voicechangerlist.selectionChanged.connect(self.showpitchchangersettings)
+        self.voicechangersettingarea = QtWidgets.QScrollArea(self.voicechanger_tb)
+        self.voicechangersettingarea.setObjectName(u"voicechangersettingarea")
+        self.voicechangersettingarea.setGeometry(QtCore.QRect(210, 10, 411, 411))
+        self.voicechangersettingarea.setWidgetResizable(True)
+        self.scrollAreaWidgetContents = QtWidgets.QWidget()
+        self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 409, 409))
+        self.voicechangersettingarea.setWidget(self.scrollAreaWidgetContents)
+        self.note = QtWidgets.QLabel(self.scrollAreaWidgetContents)
+        self.note.setObjectName(u"note")
+        self.note.setGeometry(QtCore.QRect(20, 10, 371, 51))
+        self.note.hide()
+        self.pitchval_hs = QtWidgets.QSlider(self.scrollAreaWidgetContents)
+        self.pitchval_hs.setObjectName(u"pitchval_hs")
+        self.pitchval_hs.setGeometry(QtCore.QRect(20, 100, 361, 22))
+        self.pitchval_hs.setOrientation(QtCore.Qt.Horizontal)
+        self.pitchval_hs.setMaximum(500)
+        self.pitchval_hs.hide()
+        self.pitchval = QtWidgets.QLabel(self.scrollAreaWidgetContents)
+        self.pitchval.setObjectName(u"pitchval")
+        self.pitchval.setGeometry(QtCore.QRect(20, 80, 71, 16))
+        self.pitchval.hide()
+        self.pitch_volume = QtWidgets.QLabel(self.scrollAreaWidgetContents)
+        self.pitch_volume.setObjectName(u"pitch_volume")
+        self.pitch_volume.setGeometry(QtCore.QRect(20, 130, 47, 13))
+        self.pitch_volume.hide()
+        self.pitch_volume_hs = QtWidgets.QSlider(self.scrollAreaWidgetContents)
+        self.pitch_volume_hs.setObjectName(u"pitch_volume_hs")
+        self.pitch_volume_hs.setGeometry(QtCore.QRect(20, 150, 361, 22))
+        self.pitch_volume_hs.setOrientation(QtCore.Qt.Horizontal)
+        self.pitch_volume_hs.setMaximum(200)
+        self.pitch_volume_hs.hide()
+        self.applyvoicechanger = QtWidgets.QPushButton(self.voicechanger_tb)
+        self.applyvoicechanger.setObjectName(u"applyvoicechanger")
+        self.applyvoicechanger.setGeometry(QtCore.QRect(10, 400, 181, 23))
+        self.applyvoicechanger.clicked.connect(self.applyvoicechanger_clk)
+        #self.showpitchchangersettings()
+        self.tabWidget.addTab(self.voicechanger_tb, "")
+
+        #-----------------------------------------------------------------------------------------
+
         self.horizontalSlider = QtWidgets.QSlider(self.tab_2)
         self.horizontalSlider.setGeometry(QtCore.QRect(10, 30, 451, 22))
         self.horizontalSlider.setMaximum(200)
@@ -257,7 +415,14 @@ class Ui_voicemode(object):
         self.soundboardvolumeslider.setObjectName(u"soundboardvolumeslider")
         self.soundboardvolumeslider.setGeometry(QtCore.QRect(10, 220, 451, 22))
         self.soundboardvolumeslider.setMaximum(100)
-        self.soundboardvolumeslider.setOrientation(QtCore.Qt.Horizontal)   
+        self.soundboardvolumeslider.setOrientation(QtCore.Qt.Horizontal)
+        self.sethotkeytostop_lb = QtWidgets.QLabel(self.tab_2)
+        self.sethotkeytostop_lb.setObjectName(u"sethotkeytostop_lb")
+        self.sethotkeytostop_lb.setGeometry(QtCore.QRect(10, 270, 151, 21))
+        self.startcapture_hk_bt = QtWidgets.QPushButton(self.tab_2)
+        self.startcapture_hk_bt.setObjectName(u"startcapture_hk_bt")
+        self.startcapture_hk_bt.setGeometry(QtCore.QRect(210, 270, 151, 23))
+        self.startcapture_hk_bt.clicked.connect(self.startcapture_hk_bt_clk)   
         self.play = QtWidgets.QPushButton(self.soundboard)
         self.play.setObjectName(u"play")
         self.play.setGeometry(QtCore.QRect(10, 190, 41, 23))
@@ -269,6 +434,8 @@ class Ui_voicemode(object):
         print(audiofiledir[0])
         self.getaudiolist()
         self.getaudiodevices()
+        if len(hotkeydict.keys()) != 0:
+            self.settableview(hotkeydict)
         
         try:
             print(selectedoutputdevicetext[0])
@@ -308,10 +475,29 @@ class Ui_voicemode(object):
             self.soundboardvolumeslider.setValue(soundboardvolume[0])
         except:
             pass   
-        
+        try:
+            self.pitch_volume_hs.setValue(pitchvolume[0])
+            self.pitch_volume.setText("Pitch volume "+ str(pitchvolume[0]))
+        except:
+            pass
+        try:
+            self.pitchval_hs.setValue(pitchvolume[0])
+            self.pitchval.setText("Pitch "+ str(pitch[0]))
+        except:
+            pass
+        try:
+            if pitchshift[0] == 0:
+                self.setlistwidgtitemcheckstate("Pitch Shift",False)
+            elif pitchshift[0] == 2:
+                self.setlistwidgtitemcheckstate("Pitch Shift",True)
+        except:
+            pass
+
         self.overridesoudboardvolume.stateChanged.connect(self.setoverridesoudboarvolumedval)
         self.soundboardvolumeslider.valueChanged.connect(self.setsoundboardvolumeval)
         self.horizontalSlider.valueChanged.connect(self.sethearmyselfvolumeval)
+        self.pitchval_hs.valueChanged.connect(self.setpitchval)
+        self.pitch_volume_hs.valueChanged.connect(self.setpitchvolumeval)
         self.sampelrate.setText('hear my self volume '+str(self.horizontalSlider.value()))    
         self.hearmyselfdevice.currentTextChanged.connect(self.sethearmyselfdeviceval)   
         self.inputdevice.currentTextChanged.connect(self.setindeviceindexfunc)  
@@ -320,8 +506,13 @@ class Ui_voicemode(object):
         self.hotkeylistenercall()
         self.mictooutputcall()
         self.hearituself()
+        self.keyboardlistenerto_stopaudio_call()
         QtCore.QMetaObject.connectSlotsByName(voicemode)
 
+
+    def keyboardlistenerto_stopaudio_call(self):
+        self.thread6 = keyboardlistenerto_stopaudio_thread()
+        self.thread6.start()
 
     def hearituself(self):
         if overridehearuselfdevice[0] == 2:
@@ -364,7 +555,10 @@ class Ui_voicemode(object):
             self.settingval.setValue("hearmyselfvolume",100)
             self.settingval.setValue("overridesoundboardvolume",0)
             self.settingval.setValue("soundboardvolume",100)
-            
+            self.settingval.setValue("pitchvolume",100)
+            self.settingval.setValue("pitch",100)
+            self.settingval.setValue("pitchshift",0)
+
         elif len(settingkeylist)==0:
             print("set def val")
             self.settingval.setValue("audio path",userpath+"/Music")
@@ -375,6 +569,9 @@ class Ui_voicemode(object):
             self.settingval.setValue("hearmyselfvolume",100)
             self.settingval.setValue("overridesoundboardvolume",0)
             self.settingval.setValue("soundboardvolume",100)
+            self.settingval.setValue("pitchvolume",100)
+            self.settingval.setValue("pitch",100)
+            self.settingval.setValue("pitchshift",0)
 
     def getsettingvals(self):
         self.settingval = QSettings("Dragon Voide Mode","settings vals")
@@ -386,6 +583,9 @@ class Ui_voicemode(object):
         hearmyselfvolume[0] = self.settingval.value("hearmyselfvolume")
         overridesoundboardvolume[0] = self.settingval.value("overridesoundboardvolume")
         soundboardvolume[0] = self.settingval.value("soundboardvolume")
+        pitchvolume[0] = self.settingval.value("pitchvolume")
+        pitch[0] = self.settingval.value("pitch")
+        pitchshift[0] = self.settingval.value("pitchshift")
 
     def setsettingvals(self):
         self.settingval = QSettings("Dragon Voide Mode","settings vals")
@@ -513,11 +713,12 @@ class Ui_voicemode(object):
         self.setsettingvals()
 
     def asinghk_clk(self):
-        hkstr = self.lineEdit.text()
+        '''hkstr = self.lineEdit.text()
         print(hkstr)
         newhklist =[modifirekeyslist[self.comboBox.currentIndex()],hkstr]
         print(newhklist)
-        newhk = newhklist[0]+"+"+newhklist[1]
+        newhk = newhklist[0]+"+"+newhklist[1]'''
+        newhk = self.capturekey_sb_lb.text()
         self.getcheckditems(model)
         hotkeydict[str(newhk)] = selectedaudios[0]
         print(hotkeydict)
@@ -587,19 +788,126 @@ class Ui_voicemode(object):
         except Exception as e:
             print(e)
 
+    def settableview(self,dic):
+        global tablemodel
+        try:
+            tablemodel = QtGui.QStandardItemModel()
+        
+            dic = dic
+            print(str(enumerate(dic)))
+            tablemodel = TableModel(dic)
+            self.tableView.setModel(tablemodel)
+        except:
+            pass   
+        '''for row, col in enumerate(dic):
+            print(col)
+            rowitem = QtGui.QStandardItem(row)
+            colitem = QtGui.QStandardItem(col)
+            tablemodel.appendRow(rowitem)
+            tablemodel.appendColumn(colitem)
+            tablemodel = TableModel(dict)
+            self.tableView.setModel(tablemodel)'''
+            #self.tableView.setItem(row, col, newitem)
+
+    def showpitchchangersettings(self):
+
+        self.note.show()
+        self.pitchval.show()
+        self.pitchval_hs.show()
+        self.pitch_volume.show()
+        self.pitch_volume_hs.show()
+
+    def setpitchvolumeval(self):
+        pitchvolume[0] = self.pitch_volume_hs.value()
+        self.settingval.setValue("pitchvolume",self.pitch_volume_hs.value())
+        self.pitch_volume.setText("Pitch volume "+ str(pitchvolume[0]))
+
+    def setpitchval(self):
+        pitch[0] = self.pitchval_hs.value()
+        self.settingval.setValue("pitch",self.pitchval_hs.value())
+        self.pitch_volume.setText("Pitch "+ str(pitchvolume[0]))
+
+    def getischeckedfromlistwdgt(self,itemstr):
+        item = self.voicechangerlist.item(0)
+        if item.checkState() != QtCore.Qt.Checked:
+            return 2
+        else:
+            return 0     
+
+    def setlistwidgtitemcheckstate(self,itemstr,state = False):
+        item = self.voicechangerlist.findItems(itemstr)
+        if state == True:
+            item[0].setCheckState(QtCore.Qt.Checked)
+        else:
+            item[0].setCheckState(QtCore.Qt.Checked(False))
+
+    def applyvoicechanger_clk(self):
+        pitchshiftstate = self.getischeckedfromlistwdgt("Pitch Shift")
+        if pitchshiftstate  == 2:
+            self.settingval.setValue("pitchshift",2)
+        else:
+            self.settingval.setValue("pitchshift",0)    
+            
+    def filteraudiofiles_func(self,searchstr):
+        self.filteraudiofiles = QtCore.QSortFilterProxyModel()
+        self.filteraudiofiles.setSourceModel(model)
+        self.filteraudiofiles.setFilterCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        self.filteraudiofiles.setFilterRegExp(searchstr)
+        self.listView.setModel(self.filteraudiofiles)
+
+    def startcapture_hk_bt_clk(self):
+
+        if self.startcapture_hk_bt.text() == "Start capture hotkey":
+            print("start capture")
+            self.thread5 = capturehk_thread()
+            self.thread5.start()
+            self.thread5.setTerminationEnabled(True)
+            self.startcapture_hk_bt.setText("Stop chapture")
+            self.thread5.capturedhk.connect(self.sethotkeytostop_lb.setText)
+        elif self.startcapture_hk_bt.text() == "Stop chapture":
+            print("stop capture")
+            try:
+                self.thread5.terminate()
+                self.settingval.setValue("stophotkey",self.sethotkeytostop_lb.text())
+                self.startcapture_hk_bt.setText("Start capture hotkey")
+            except:
+                pass  
+
+    def startcapturekeys_sb_bt_clk(self):
+    
+        if self.startcapturekeys_sb_bt.text() == "Start capture":
+            print("start capture")
+            self.thread5 = capturehk_thread()
+            self.thread5.start()
+            self.thread5.setTerminationEnabled(True)
+            self.startcapturekeys_sb_bt.setText("Stop capture")
+            self.thread5.capturedhk.connect(self.capturekey_sb_lb.setText)
+        elif self.startcapturekeys_sb_bt.text() == "Stop capture":
+            print("stop capture")
+            self.startcapturekeys_sb_bt.setText("Start capture")
+            try:
+                self.startcapturekeys_sb_bt.setText("Start capture")
+                self.thread5.terminate()
+                
+                
+            except:
+                pass        
+
+
+
     def retranslateUi(self, voicemode):
         _translate = QtCore.QCoreApplication.translate
         voicemode.setWindowTitle(_translate("voicemode", "DRAGON VOICE MODE"))
         self.asinghk.setText(_translate("voicemode", "Add Hot Key"))
-        self.comboBox.setItemText(1, _translate("voicemode", "alt_r"))
+        '''self.comboBox.setItemText(1, _translate("voicemode", "alt_r"))
         self.comboBox.setItemText(0, _translate("voicemode", "alt_l"))
-        self.label.setText(_translate("voicemode", "+"))
+        self.label.setText(_translate("voicemode", "+"))'''
         self.removehk.setText(_translate("voicemode", "Remove Hot Key"))
-        self.repeat.setText(_translate("voicemode", "repeat"))
+        #self.repeat.setText(_translate("voicemode", "repeat"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.soundboard), _translate("voicemode", "Sound Board"))
         self.sampelrate.setText(_translate("voicemode", "hear my self volume"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("voicemode", "voice settings"))
-        self.about.setTitle(_translate("voicemode", "about"))
+        self.about.setTitle(_translate("voicemode", "Edit"))
         self.openaudiopath.setText(_translate("voicemode", u"open audio files dir", None))
         self.refreshlist.setText(_translate("voicemode", u"Refresh List", None))
         self.play.setText(_translate("voicemode", u"play", None))
@@ -610,8 +918,26 @@ class Ui_voicemode(object):
         self.overridehearuselfdevice.setText(_translate("voicemode", u"override hear your self device", None))
         self.overridesoudboardvolume.setText(_translate("voicemode", u"override sound board volume", None))
         self.showhotkey.setText(_translate("voicemode", u"Show Hotkey", None))
-        
-        
+        self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.audiofileview_tb), _translate("voicemode", u"Audio files view", None))
+        self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.hotkeysview_tb), _translate("voicemode", u"Hotkeys view", None))
+        __sortingEnabled = self.voicechangerlist.isSortingEnabled()
+        self.voicechangerlist.setSortingEnabled(False)
+        ___qlistwidgetitem = self.voicechangerlist.item(0)
+        ___qlistwidgetitem.setText(_translate("voicemode", u"Pitch Shift", None));
+        self.voicechangerlist.setSortingEnabled(__sortingEnabled)
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.voicechanger_tb), _translate("voicemode", u"voice changer", None))
+        self.applyvoicechanger.setText(_translate("voicemode", u"Apply", None))
+        self.searchinaudiofiles_lb.setText(_translate("voicemode", u"Search Audio File", None))
+        self.sethotkeytostop_lb.setText(_translate("voicemode", u"Set hotkey to stop audio", None))
+        self.startcapture_hk_bt.setText(_translate("voicemode", u"Start capture hotkey", None))
+        self.startcapturekeys_sb_bt.setText(_translate("voicemode", u"Start capture", None))
+        self.capturekey_sb_lb.setText(_translate("voicemode", u"Start capture hot key", None))
+        try:    
+            self.note.setText(_translate("voicemode", u"still in devolopment", None))
+            self.pitchval.setText(_translate("voicemode", u"Pitch", None))
+            self.pitch_volume.setText(_translate("voicemode", u"Volume", None))
+        except:
+            pass    
         #self.label_2.setText(_translate("voicemode", u"TextLabel", None))
 
 if __name__ == "__main__":
