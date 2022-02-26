@@ -309,6 +309,7 @@ class Ui_voicemode(object):
         # -------------voice changer ui ----------------------------------------------------
         self.voicechanger_tb = QtWidgets.QWidget()
         self.voicechanger_tb.setObjectName(u"voicechanger_tb")
+        
         self.voicechangerlist = QtWidgets.QListWidget(self.voicechanger_tb)
         __qlistwidgetitem = QtWidgets.QListWidgetItem(self.voicechangerlist)
         __qlistwidgetitem.setCheckState(QtCore.Qt.Checked);
@@ -356,6 +357,7 @@ class Ui_voicemode(object):
         self.applyvoicechanger.clicked.connect(self.applyvoicechanger_clk)
         #self.showpitchchangersettings()
         self.tabWidget.addTab(self.voicechanger_tb, "")
+        self.voicechanger_tb.setDisabled(True) #voice changer tab temporery disabled
 
         #-----------------------------------------------------------------------------------------
 
