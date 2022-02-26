@@ -884,9 +884,9 @@ class Ui_voicemode(object):
             self.thread5.capturedhk.connect(self.capturekey_sb_lb.setText)
         elif self.startcapturekeys_sb_bt.text() == "Stop capture":
             print("stop capture")
-            self.startcapture_hk_bt.setText("Start capture")
+            self.startcapturekeys_sb_bt.setText("Start capture")
             try:
-                self.startcapture_hk_bt.setText("Start capture")
+                self.startcapturekeys_sb_bt.setText("Start capture")
                 self.thread5.terminate()
                 
                 

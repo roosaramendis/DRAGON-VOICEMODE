@@ -9,6 +9,12 @@ for now i released soundboard for testing perpose i hope you guys can enjoy it
 
 *If you found any bug, something stops working or the program crashes please create issue here. Include as much information as you can provide (what stopped working, what were you doing when it happened). and also feel free to pull request if you have any idea or some fixes
 
+[![preview img](https://github.com/roosaramendis/DRAGON-VOICEMODE/preview_images/prwimg1.png)]()
+[![preview img2](https://github.com/roosaramendis/DRAGON-VOICEMODE/preview_images/prwimg2.png)]()
+
+# How to setup
+
+
 
 
 # have to do

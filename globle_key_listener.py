@@ -462,7 +462,7 @@ def starlistenerforstopaudio():
                 print("if true")
                 currentkey_sa.append(strkey)
             if len(currentkey_sa)>=1:
-                if strkey!=currentkey_sa[0] and strkey in modifirekeys and len(currentkey_sa)<2:
+                if strkey!= currentkey_sa[len(currentkey_sa)-1] and strkey in modifirekeys and len(currentkey_sa)<2:
                     currentkey_sa.append(strkey)
                     print(currentkey_sa)   
                 else:
@@ -497,8 +497,9 @@ def starlistenerforstopaudio():
         if len(currentkey_sa) >1:
             try:
                 print(currentkey[0]+"+"+str(currentkey[1]).replace("'",""))
+                print(str(currentkey_sa)+"on releas23")
                 stopaudio_call(currentkey_sa)
-                print(str(currentkey_sa)+"on releas22")
+                
                 #return currentkey    
                 currentkey_sa.clear()
             except:
