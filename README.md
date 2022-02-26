@@ -14,8 +14,18 @@ for now i released soundboard for testing perpose i hope you guys can enjoy it
 
 # How to setup
 
+fist you need to set input device to your microphone 
+[![step 1](https://github.com/roosaramendis/DRAGON-VOICEMODE/blob/voice-changer/preview_images/step%201.png)]()
 
+then you need to select virtual audio device input as output device in software.i recomend to use vb cable as your virtual
+device this images showing how to set up with vb cable. but if you have any other audio device you can use that 
 
+[![step 1](https://github.com/roosaramendis/DRAGON-VOICEMODE/blob/voice-changer/preview_images/step%201.png)]()
+
+after that you have to set your input audio divice from windows settings to virtual audio device output as your input device the you can set other softwares or games input device as default. if you dont like to change windows settings
+you can set it to only on game or software what you need to use 
+
+*keep on mind if you using virtual audio device as input you have to use dragon voice mode to use voice . you can change setting when you are not using dragon voice mode 
 
 # have to do
     some improvements 
