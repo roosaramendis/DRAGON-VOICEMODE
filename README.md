@@ -23,7 +23,7 @@ device this images showing how to set up with vb cable. but if you have any othe
 [![step 1](https://github.com/roosaramendis/DRAGON-VOICEMODE/blob/voice-changer/preview_images/step%202.png)]()
 
 after that you have to set your input audio divice from windows settings to virtual audio device output as your input device the you can set other softwares or games input device as default. if you dont like to change windows settings
-you can set it to only on game or software what you need to use 
+you can set it to only on game or software what you need to use .
 
 *keep on mind if you using virtual audio device as input you have to use dragon voice mode to use voice . you can change setting when you are not using dragon voice mode 
 
