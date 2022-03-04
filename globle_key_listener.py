@@ -421,11 +421,13 @@ def starlistenerforstopaudio():
     def stopaudio_call(hkey):
         settingval = QSettings("Dragon Voide Mode","settings vals")
         if len(hkey)>2:
-            captrdkey = hkey[0]+"+"+hkey[1]+"+"+hkey[2]
+            captrdkey = hkey[0]+"+"+hkey[1]+"+"+hkey[2].replace("'","")
         elif len(hkey)>1:
-            captrdkey = hkey[0]+"+"+hkey[1]
+            captrdkey = hkey[0]+"+"+hkey[1].replace("'","")
         elif len(hkey) == 1:
             captrdkey = hkey[0]
+        print(captrdkey)
+        print("cptstopkey")    
         if captrdkey in settingval.value("stophotkey"):    
             stopaudio()    
     def stopaudio():
@@ -496,7 +498,7 @@ def starlistenerforstopaudio():
         currentreleaskey_sa.append(str(key))
         if len(currentkey_sa) >1:
             try:
-                print(currentkey[0]+"+"+str(currentkey[1]).replace("'",""))
+                print(currentkey_sa[0]+"+"+str(currentkey_sa[1]).replace("'",""))
                 print(str(currentkey_sa)+"on releas23")
                 stopaudio_call(currentkey_sa)
                 

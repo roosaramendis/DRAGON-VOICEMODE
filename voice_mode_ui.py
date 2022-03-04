@@ -138,8 +138,8 @@ class keyboardlistenerto_stopaudio_thread(QtCore.QThread):
         super(keyboardlistenerto_stopaudio_thread,self).__init__(parent)
 
     def run(self):
-        
-        while True:
+        globle_key_listener.starlistenerforstopaudio_call()
+        '''while True:
             time.sleep(0.5)
             #print(str(audio.playaudio_class().getisaudioplaying())+" in while")
             if audio.playaudio_class().getisaudioplaying() == True:
@@ -151,10 +151,8 @@ class keyboardlistenerto_stopaudio_thread(QtCore.QThread):
                     except:
                         print("print err") 
             else:            
-                keyboardlistenerto_stopaudiocalledtimes[0] = 0
+                keyboardlistenerto_stopaudiocalledtimes[0] = 0'''
                 #print(str(hearituselfcalledtimes[0])+"hearituself called times")
-                '''stopstreaminmicintoout[0] = True
-                mic_to_output.stopmictoinput()'''
                 #self.suicidefunc.emit("terminate")
 
 class playaudio_thread(QtCore.QThread):
