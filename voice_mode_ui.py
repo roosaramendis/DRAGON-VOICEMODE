@@ -211,6 +211,7 @@ class gblkeylistener_thread(QtCore.QThread):
         super(gblkeylistener_thread,self).__init__(parent)
     def run(self):
         try:
+            print('start listner called')
             globle_key_listener.starlistener(hotkeydict,deviceslist.index(selectedoutputdevicetext[0]),soundboardvolume[0]/100)
         except:
             pass
@@ -518,6 +519,8 @@ class Ui_voicemode(object):
         if overridehearuselfdevice[0] == 2:
             self.thread3 = hearituself_thread(selectedinputdevice=deviceslist.index(sd.query_devices(kind='input')['name']),selectedoutputdevice=deviceslist.index(hearmyselfdevice[0]),volume=self.horizontalSlider.value())
         if overridehearuselfdevice[0] == 0:
+            print('hearmyself default output device is '+str(deviceslist.index(sd.query_devices(kind='output')['name'])))
+            print('hearmyself default input device is '+str(deviceslist.index(sd.query_devices(kind='input')['name'])))
             self.thread3 = hearituself_thread(selectedinputdevice=deviceslist.index(sd.query_devices(kind='input')['name']),selectedoutputdevice=deviceslist.index(sd.query_devices(kind='output')['name']),volume=self.horizontalSlider.value())    
         
         self.thread3.start()

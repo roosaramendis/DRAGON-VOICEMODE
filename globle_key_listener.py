@@ -194,7 +194,7 @@ def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
 
     def on_press(key):
         strkey = str(key)
-        print(strkey)
+        print(strkey+'instarlsitnerfun')
 
         print(strkey)
 
@@ -263,62 +263,10 @@ def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
                 currentkey.clear()
             except:
                 pass
-        '''currentreleaskey.append(str(key))
-        try:
-            if len(currentreleaskey)>0:
-                if not(currentreleaskey[len(currentreleaskey)-1] in modifirekeys):
-
-                    if len(currentkey) > 0:
-                        print('ok')
-                        if currentkey[0] in modifirekeys and len(currentkey)<2:
-                            currentkey.append(str(key))
-                            print(currentkey)
-                            print('1')
-                            for i in hotkeydict.keys():
-                                if currentkey[0]+"+"+str(currentkey[1]).replace("'","") == i:
-                                    print("play audio of key "+str(i))
-                                    callplayaudio(str(i))    
-                            if currentkey[0]+"+"+str(currentkey[1]).replace("'","") == settingval.value("stophotkey"):
-                                print("stop")
-                                currentkey.clear()
-                            else:
-                                currentkey.clear()     
-                            currentkey.clear()
-
-                            currentkey.clear()
-                            currentreleaskey.clear()
-                        elif currentkey[1] in modifirekeys and len(currentkey)<3:
-                            currentkey.append(str(key))
-                            print(currentkey)
-                            print('2')
-                            print(len(currentkey))
-                            currentkeystr = currentkey[0]+"+"+str(currentkey[1])+"+"+currentkey[2].replace("'","")
-                            print(currentkeystr+" curenkeystr")
-                            
-                            for i in hotkeydict.keys():
-                                print(currentkeystr+" curenkeystronloop")
-                                if currentkeystr == i:
-                                    print("play audio of key "+str(i))
-                                    callplayaudio(str(i))
-                                if currentkeystr == settingval.value("stophotkey"):
-                                    print("stop")
-                                    currentkey.clear()
-                                else:
-                                    currentkey.clear() 
-                            currentkey.clear()
-                            currentreleaskey.clear()
-                    if len(currentkey)!=0:        
-                        if not(currentkey[len(currentkey)-1] in modifirekeys):
-                            print(currentkey)
-                            print('3')
-                        else:
-                            currentkey.clear()
-                            currentreleaskey.clear() 
-        except Exception as e:
-            print(e)'''                            
-    
+                       
     # Collect events until released
     print(str(hotkeydict))
+    print("startlistner")
     with Listener(
             on_press=on_press,
             on_release=on_release) as listener:
