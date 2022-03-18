@@ -10,6 +10,8 @@ import struct
 import binascii
 import threading
 from PyQt5.QtCore import QSettings
+from plyer.utils import platform
+from plyer import notification
 
 global modifirekeys
 modifirekeys = ["Key.alt_l","Key.alt_gr","Key.ctrl_l","Key.shift","Key.ctrl_r","Key.shift_r"]
@@ -376,8 +378,15 @@ def starlistenerforstopaudio():
             captrdkey = hkey[0]
         print(captrdkey)
         print("cptstopkey")    
-        if captrdkey in settingval.value("stophotkey"):    
-            stopaudio()    
+        if captrdkey in settingval.value("stophotkey"):
+
+            notification.notify(
+            title="audio stoped",
+            message="audio stoped",
+            app_name='DRAGON VOICE MODE'
+            )    
+            stopaudio()
+
     def stopaudio():
         audio.stopplaying()
 
@@ -469,3 +478,5 @@ def startcapture_hk_call():
 def starlistenerforstopaudio_call():
     t1 = threading.Thread(target=starlistenerforstopaudio)
     t1.start()
+
+    

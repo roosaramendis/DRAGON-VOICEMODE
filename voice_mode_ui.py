@@ -23,7 +23,8 @@ import globle_key_listener
 import mic_to_output
 import time
 from PyQt5.QtCore import QFile, QTextStream
-
+from plyer.utils import platform
+from plyer import notification
 
 global mydir
 mydir = os.path.dirname(os.path.realpath(__file__))
@@ -169,6 +170,7 @@ class playaudio_thread(QtCore.QThread):
             
 class hearituself_thread(QtCore.QThread):
     suicidefunc = QtCore.pyqtSignal(str)
+    notififunc = QtCore.pyqtSignal(str,str)
     def __init__(self,selectedinputdevice,selectedoutputdevice,volume, parent=None):
         super(hearituself_thread,self).__init__(parent)
         self.selectedinputd = selectedinputdevice
@@ -177,13 +179,14 @@ class hearituself_thread(QtCore.QThread):
     def run(self):
         
         while True:
-            time.sleep(0.5)
+            time.sleep(0.1)#0.5
             #print(str(audio.getisaudioplaying())+" in while")
             if audio.playaudio_class().getisaudioplaying() == True:
                 hearituselfcalledtimes[0] += 1
                 print("hearit u self started") 
                 if hearituselfcalledtimes[0] <2: 
                     try:
+                        self.notififunc.emit("plyaing audio","plaing audio")
                         mic_to_output.startmictooutputcall(self.selectedinputd,self.selectedoutputd,self.volume/100)
                     except:
                         print("print err") 
@@ -518,11 +521,14 @@ class Ui_voicemode(object):
     def hearituself(self):
         if overridehearuselfdevice[0] == 2:
             self.thread3 = hearituself_thread(selectedinputdevice=deviceslist.index(sd.query_devices(kind='input')['name']),selectedoutputdevice=deviceslist.index(hearmyselfdevice[0]),volume=self.horizontalSlider.value())
+            self.thread3.notififunc.connect(self.notificationsys)
+
         if overridehearuselfdevice[0] == 0:
             print('hearmyself default output device is '+str(deviceslist.index(sd.query_devices(kind='output')['name'])))
             print('hearmyself default input device is '+str(deviceslist.index(sd.query_devices(kind='input')['name'])))
             self.thread3 = hearituself_thread(selectedinputdevice=deviceslist.index(sd.query_devices(kind='input')['name']),selectedoutputdevice=deviceslist.index(sd.query_devices(kind='output')['name']),volume=self.horizontalSlider.value())    
-        
+            self.thread3.notififunc.connect(self.notificationsys)
+
         self.thread3.start()
         self.thread3.suicidefunc.connect(self.stophearituself)
 
@@ -895,7 +901,14 @@ class Ui_voicemode(object):
                 
             except:
                 pass        
-
+    
+    def notificationsys(title,msg):
+        print('notify'+str(msg))
+        notification.notify(
+        title=str(title),
+        message=str(msg),
+        app_name='DRAGON VOICE MODE'
+        )
 
 
     def retranslateUi(self, voicemode):
