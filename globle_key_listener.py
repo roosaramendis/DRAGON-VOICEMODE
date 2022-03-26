@@ -220,9 +220,16 @@ def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
             key))    
             strkey = str(key)
         try:
-            if strkey in modifirekeys and not(len(currentkey)-1 == strkey):
+            
+            currentkey.append(strkey)
+            if strkey in modifirekeys and not(currentkey[len(currentkey)-1] in currentkey):
                 print("if true")
                 currentkey.append(strkey)
+            else:
+                print(currentkey)
+                print("fff")
+                if len(currentkey)>1:
+                    currentkey.pop(len(currentkey)-1)  
             if len(currentkey)>=1:
                 if strkey!=currentkey[0] and strkey in modifirekeys and len(currentkey)<2:
                     currentkey.append(strkey)
@@ -265,7 +272,12 @@ def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
                 currentkey.clear()
             except:
                 pass
-                       
+        else:
+            try:
+                if currentkey[len(currentkey)-1] in modifirekeys  or len(currentkey) == 1:
+                    currentkey.clear()
+            except:
+                pass                       
     # Collect events until released
     print(str(hotkeydict))
     print("startlistner")
@@ -292,6 +304,7 @@ def starcapture_hk():
         print(strkey)
 
         try:
+            
             if not(re.search("Key.",str(key))):
                 print(keyboardnumbers)
                 if not(str(key).replace("'","") in keyboardnumbers):
@@ -311,9 +324,15 @@ def starcapture_hk():
             key))    
             strkey = str(key)
         try:
-            if strkey in modifirekeys and not(len(currentkey1)-1 == strkey):
+            currentkey1.append(strkey)
+            if strkey in modifirekeys and not(currentkey1[len(currentkey1)-1] in currentkey1):
                 print("if true")
                 currentkey1.append(strkey)
+            else:
+                print(currentkey1)
+                print("fff")
+                if len(currentkey1)>1:
+                    currentkey1.pop(len(currentkey1)-1)
             if len(currentkey1)>=1:
                 if strkey!=currentkey1[0] and strkey in modifirekeys and len(currentkey1)<2:
                     currentkey1.append(strkey)
@@ -357,7 +376,12 @@ def starcapture_hk():
                 currentkey1.clear()
             except:
                 pass
-       
+        else:
+            try:
+                if currentkey1[len(currentkey1)-1] in modifirekeys  or len(currentkey1) == 1:
+                    currentkey1.clear()
+            except:
+                pass         
 
 
     # Collect events until released
@@ -417,9 +441,15 @@ def starlistenerforstopaudio():
             key))    
             strkey = str(key)
         try:
-            if strkey in modifirekeys and not(len(currentkey_sa)-1 == strkey):
+            currentkey_sa.append(strkey)
+            if strkey in modifirekeys and not(currentkey_sa[len(currentkey_sa)-1] in currentkey_sa):
                 print("if true")
                 currentkey_sa.append(strkey)
+            else:
+                print(currentkey_sa)
+                print("fff")
+                if len(currentkey_sa)>1:
+                    currentkey_sa.pop(len(currentkey_sa)-1)
             if len(currentkey_sa)>=1:
                 if strkey!= currentkey_sa[len(currentkey_sa)-1] and strkey in modifirekeys and len(currentkey_sa)<2:
                     currentkey_sa.append(strkey)
@@ -463,6 +493,12 @@ def starlistenerforstopaudio():
                 currentkey_sa.clear()
             except:
                 pass
+        else:
+            try:
+                if currentkey_sa[len(currentkey_sa)-1] in modifirekeys  or len(currentkey_sa) == 1:
+                    currentkey_sa.clear()
+            except:
+                pass      
     # Collect events until released
 
     with Listener(
