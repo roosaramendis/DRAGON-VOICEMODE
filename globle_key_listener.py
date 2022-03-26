@@ -203,7 +203,7 @@ def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
         try:
             if not(re.search("Key.",str(key))):
                 print(keyboardnumbers)
-                if not(str(key).replace("'","") in keyboardnumbers):
+                if not(str(key).replace("'","") in keyboardnumbers)and (currentkey[0] =="Key.ctrl_l" or currentkey[0] =="Key.ctrl_r"):
                     print(str(key))
                     formatedkeyhex = str(key).replace("'\\x","")
                     formatedkeyhex = formatedkeyhex.replace("'","")
@@ -307,7 +307,7 @@ def starcapture_hk():
             
             if not(re.search("Key.",str(key))):
                 print(keyboardnumbers)
-                if not(str(key).replace("'","") in keyboardnumbers):
+                if not(str(key).replace("'","") in keyboardnumbers)and (currentkey1[0] =="Key.ctrl_l" or currentkey1[0] =="Key.ctrl_r"):
                     print(str(key))
                     formatedkeyhex = str(key).replace("'\\x","")
                     formatedkeyhex = formatedkeyhex.replace("'","")
@@ -424,7 +424,7 @@ def starlistenerforstopaudio():
         try:
             if not(re.search("Key.",str(key))):
                 print(keyboardnumbers)
-                if not(str(key).replace("'","") in keyboardnumbers):
+                if not(str(key).replace("'","") in keyboardnumbers) and (currentkey_sa[0] =="Key.ctrl_l" or currentkey_sa[0] =="Key.ctrl_r"):
                     print(str(key))
                     formatedkeyhex = str(key).replace("'\\x","")
                     formatedkeyhex = formatedkeyhex.replace("'","")
