@@ -39,6 +39,19 @@
     <string>enable game overlay</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="info">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>450</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Info</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
