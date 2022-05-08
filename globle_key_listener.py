@@ -185,6 +185,9 @@ def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
             elif len(pressedkey) == 1:
                 pressedkeystr = pressedkey[0].replace("'","")
             afilename = hotkeydict[pressedkeystr]
+            #print(volume)
+            settingval = QSettings("Dragon Voide Mode","settings vals")
+            volume = settingval.value("soundboardvolume")/100
             print(volume)
             audio.playaudio_class().playaudio(filename=afilename,deviceindex=selecteddiviceinderx,chunksize=1024,volume=volume)
         else:
@@ -260,7 +263,7 @@ def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
     def on_release(key):
         print('{0} release'.format(
             key))
-        settingval = QSettings("Dragon Voide Mode","settings vals")
+        #settingval = QSettings("Dragon Voide Mode","settings vals")
         on_releasetimes[0] += 1
         print(str(currentkey)+"onreleasss")
         if len(currentkey) >1:

@@ -235,6 +235,7 @@ class Ui_voicemode(object):
             print(hotkeydict)
         except:
             pass
+        
         self.centralwidget = QtWidgets.QWidget(voicemode)
         self.centralwidget.setObjectName("centralwidget")
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
@@ -373,16 +374,25 @@ class Ui_voicemode(object):
         self.sampelrate.setObjectName("sampelrate")
         self.tabWidget.addTab(self.tab_2, "")
         voicemode.setCentralWidget(self.centralwidget)
+        self.actionsettings = QtWidgets.QAction(voicemode)
+        self.actionsettings.setObjectName(u"actionsettings")
+        
+        self.actionabout = QtWidgets.QAction(voicemode)
+        self.actionabout.setObjectName(u"actionabout")
         self.menubar = QtWidgets.QMenuBar(voicemode)
+        self.menubar.setObjectName(u"menubar")
         self.menubar.setGeometry(QtCore.QRect(0, 0, 642, 21))
-        self.menubar.setObjectName("menubar")
-        self.about = QtWidgets.QMenu(self.menubar)
-        self.about.setObjectName("about")
+        self.menu = QtWidgets.QMenu(self.menubar)
+        self.menu.setObjectName(u"menu")
         voicemode.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(voicemode)
-        self.statusbar.setObjectName("statusbar")
+        self.statusbar.setObjectName(u"statusbar")
         voicemode.setStatusBar(self.statusbar)
-        self.menubar.addAction(self.about.menuAction())
+        self.menubar.addAction(self.menu.menuAction())
+        self.menu.addAction(self.actionsettings)
+        self.menu.addAction(self.actionabout)
+        
+        
         self.label_2 = QtWidgets.QLabel(self.tab_2)
         self.label_2.setObjectName(u"label_2")
         self.label_2.setGeometry(QtCore.QRect(10, 70, 451, 21))
@@ -520,14 +530,18 @@ class Ui_voicemode(object):
 
     def hearituself(self):
         if overridehearuselfdevice[0] == 2:
+            self.settingval = QSettings("Dragon Voide Mode","settings vals")
+            if (self.settingval.value("enable notify")== 2):
+                self.thread3.notififunc.connect(self.notificationsys)
             self.thread3 = hearituself_thread(selectedinputdevice=deviceslist.index(sd.query_devices(kind='input')['name']),selectedoutputdevice=deviceslist.index(hearmyselfdevice[0]),volume=self.horizontalSlider.value())
-            self.thread3.notififunc.connect(self.notificationsys)
+            
 
         if overridehearuselfdevice[0] == 0:
             print('hearmyself default output device is '+str(deviceslist.index(sd.query_devices(kind='output')['name'])))
             print('hearmyself default input device is '+str(deviceslist.index(sd.query_devices(kind='input')['name'])))
             self.thread3 = hearituself_thread(selectedinputdevice=deviceslist.index(sd.query_devices(kind='input')['name']),selectedoutputdevice=deviceslist.index(sd.query_devices(kind='output')['name']),volume=self.horizontalSlider.value())    
-            self.thread3.notififunc.connect(self.notificationsys)
+            if (self.settingval.value("enable notify")== 2):
+                self.thread3.notififunc.connect(self.notificationsys)
 
         self.thread3.start()
         self.thread3.suicidefunc.connect(self.stophearituself)
@@ -567,6 +581,8 @@ class Ui_voicemode(object):
             self.settingval.setValue("pitchvolume",100)
             self.settingval.setValue("pitch",100)
             self.settingval.setValue("pitchshift",0)
+            self.settingval.setValue("enable notify",0)
+            self.settingval.setValue("overlay enable",0)
 
         elif len(settingkeylist)==0:
             print("set def val")
@@ -581,6 +597,8 @@ class Ui_voicemode(object):
             self.settingval.setValue("pitchvolume",100)
             self.settingval.setValue("pitch",100)
             self.settingval.setValue("pitchshift",0)
+            self.settingval.setValue("enable notify",0)
+            self.settingval.setValue("overlay enable",0)
 
     def getsettingvals(self):
         self.settingval = QSettings("Dragon Voide Mode","settings vals")
@@ -920,10 +938,13 @@ class Ui_voicemode(object):
         self.label.setText(_translate("voicemode", "+"))'''
         self.removehk.setText(_translate("voicemode", "Remove Hot Key"))
         #self.repeat.setText(_translate("voicemode", "repeat"))
+        self.actionsettings.setText(_translate("voicemode", u"settings", None))
+        self.actionabout.setText(_translate("voicemode", u"about", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.soundboard), _translate("voicemode", "Sound Board"))
         self.sampelrate.setText(_translate("voicemode", "hear my self volume"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("voicemode", "voice settings"))
-        self.about.setTitle(_translate("voicemode", "Edit"))
+        
+        self.menu.setTitle(_translate("voicemode", u"menu", None))
         self.openaudiopath.setText(_translate("voicemode", u"open audio files dir", None))
         self.refreshlist.setText(_translate("voicemode", u"Refresh List", None))
         self.play.setText(_translate("voicemode", u"play", None))

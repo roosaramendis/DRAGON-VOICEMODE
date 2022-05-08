@@ -37,7 +37,9 @@ selectedinputdevicetext = ['']
 
 
 def getsettingvals():
+    global settingval
     settingval = QSettings("Dragon Voide Mode","settings vals")
+    
     selectedoutputdevicetext[0] = settingval.value("selectedoutputdevicetext")
     selectedinputdevicetext[0] = settingval.value("selectedinputdevicetext")
     overridehearuselfdevice[0] = settingval.value("overridehearuselfdevice")
@@ -89,7 +91,7 @@ def startmictooutputforhearaudio(inputdeviceindex,outputdeviceindex,volume):
     def callback(indata, outdata, frames, time, status):
         if status:
             print(status)
-        outdata[:] = (indata) * volume#indata
+        outdata[:] = (indata) * settingval.value("hearmyselfvolume")/100
   
     print("mic input stated")
     print(volume)
