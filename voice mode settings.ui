@@ -52,6 +52,45 @@
     <string>Info</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="add_overlay_programs">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>130</y>
+     <width>131</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Add OverLay Programs</string>
+   </property>
+  </widget>
+  <widget class="QListView" name="listView">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>190</y>
+     <width>561</width>
+     <height>161</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>160</y>
+     <width>551</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>....................................................Overlay enabled programs....................................................</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

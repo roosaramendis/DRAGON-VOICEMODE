@@ -5,7 +5,12 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import QFile, QTextStream
 import sys
-import voice_mode_ui, voice_mode_settings_ui,info
+import voice_mode_ui, voice_mode_settings_ui,info,addprogramsforoverlay_py
+
+class addappsforovelay(QtWidgets.QMainWindow, addprogramsforoverlay_py.Ui_addprogramsforoverlay):
+    def __init__(self, parent=None):
+        super(addappsforovelay, self).__init__(parent)
+        self.setupUi(self)
 
 class info(QtWidgets.QMainWindow, info.Ui_Frame):
     def __init__(self, parent=None):
@@ -18,8 +23,14 @@ class settings_window(QtWidgets.QMainWindow, voice_mode_settings_ui.Ui_Dialog):
         self.setupUi(self)
         self.info.clicked.connect(self.credits_clk1)
         self.dialog1 = info(self)
+        self.add_overlay_programs.clicked.connect(self.aop_clk)
+        self.dialog2 = addappsforovelay(self)
     def credits_clk1(self):
         self.dialog1.show()    
+
+    def aop_clk(self):
+        self.dialog2.show()
+
 class voice_mode_window(QtWidgets.QMainWindow, voice_mode_ui.Ui_voicemode):
     def __init__(self, parent=None):
         super(voice_mode_window, self).__init__(parent)

@@ -10,6 +10,12 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QSettings
+import pickle
+import os
+
+
+global mydir
+mydir = os.path.dirname(os.path.realpath(__file__))
 
 
 class Ui_Dialog(object):
@@ -30,6 +36,17 @@ class Ui_Dialog(object):
         self.info = QtWidgets.QPushButton(Dialog)
         self.info.setObjectName(u"info")
         self.info.setGeometry(QtCore.QRect(30, 450, 75, 23))
+        self.add_overlay_programs = QtWidgets.QPushButton(Dialog)
+        self.add_overlay_programs.setObjectName(u"add_overlay_programs")
+        self.add_overlay_programs.setEnabled(True)
+        self.add_overlay_programs.setGeometry(QtCore.QRect(40, 130, 131, 23))
+        self.listView = QtWidgets.QListView(Dialog)
+        self.listView.setObjectName(u"listView")
+        self.listView.setGeometry(QtCore.QRect(40, 190, 561, 161))
+        self.label = QtWidgets.QLabel(Dialog)
+        self.label.setObjectName(u"label")
+        self.label.setGeometry(QtCore.QRect(50, 160, 551, 21))
+        self.showlist()
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -40,7 +57,26 @@ class Ui_Dialog(object):
 
     def setenabloverlay(self,stateindex):
         print("overlay"+str(stateindex))
-        self.settingval.setValue("overlay enable",stateindex)    
+        self.settingval.setValue("overlay enable",stateindex) 
+
+    def showlist(self):
+        try:
+            global model
+            model = QtGui.QStandardItemModel()
+            datainfile = pickle.load(open(mydir+"/"+"saves/overlayapps.dvm","rb")) #read data in file
+            for i in datainfile:
+                print(i)
+                item = QtGui.QStandardItem(i)
+                check = QtCore.Qt.Checked = False
+                item.setCheckState(check)
+                item.setText(str(i))
+                print(item.text()+" lisetview"+" "+str(item.checkState()))
+                item.setCheckable(True)
+                model.appendRow(item)
+                print(model)  
+            self.listView.setModel(model)          
+        except:
+            pass        
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
@@ -48,6 +84,8 @@ class Ui_Dialog(object):
         self.enablenitify.setText(_translate("Dialog", "enable notifications"))
         self.enableoverlay.setText(_translate("Dialog", "enable game overlay"))
         self.info.setText(_translate("Dialog", u"Info", None))
+        self.add_overlay_programs.setText(_translate("Dialog", u"Add OverLay Programs", None))
+        self.label.setText(_translate("Dialog", u"....................................................Overlay enabled programs....................................................", None))
 
 
 if __name__ == "__main__":
