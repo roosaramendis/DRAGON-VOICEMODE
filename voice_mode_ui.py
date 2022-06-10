@@ -125,7 +125,7 @@ class capturehk_thread(QtCore.QThread):
         
            
         while True:
-            time.sleep(0.2)
+            time.sleep(0.02)
             capturehkcalltimes[0] += 1
             if capturehkcalltimes[0] <2:
                 globle_key_listener.startcapture_hk_call()
@@ -583,6 +583,7 @@ class Ui_voicemode(object):
             self.settingval.setValue("pitchshift",0)
             self.settingval.setValue("enable notify",0)
             self.settingval.setValue("overlay enable",0)
+            self.settingval.setValue("audio_stat","Idle")
 
         elif len(settingkeylist)==0:
             print("set def val")
@@ -599,6 +600,7 @@ class Ui_voicemode(object):
             self.settingval.setValue("pitchshift",0)
             self.settingval.setValue("enable notify",0)
             self.settingval.setValue("overlay enable",0)
+            self.settingval.setValue("audio_stat","Idle")
 
     def getsettingvals(self):
         self.settingval = QSettings("Dragon Voide Mode","settings vals")
@@ -692,6 +694,7 @@ class Ui_voicemode(object):
             print(selectedaudios)
             selecetedfilepath = selectedaudios[0].replace('\\','/')
             print(selecetedfilepath)
+            self.settingval.setValue("audio_stat","Playing")
             self.thread4 = playaudio_thread(selecetedfilepath,deviceslist.index(self.outputdevice.currentText()))
             self.thread4.start()
         except Exception as e:
@@ -700,11 +703,13 @@ class Ui_voicemode(object):
     def stop_clk(self):
         try:
             print(str(sd.get_stream()))
+            self.settingval.setValue("audio_stat","Stoping")
             audio.stopplaying()
             #sd.stop()
             self.thread4.setTerminationEnabled(True)
             self.thread4.terminate()
             sd.default.reset()
+
         except Exception as e:
             print(e)
                  

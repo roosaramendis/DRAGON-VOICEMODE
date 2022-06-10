@@ -189,6 +189,8 @@ def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
             settingval = QSettings("Dragon Voide Mode","settings vals")
             volume = settingval.value("soundboardvolume")/100
             print(volume)
+            settingval = QSettings("Dragon Voide Mode","settings vals")
+            settingval.setValue("audio_stat","Playing")
             audio.playaudio_class().playaudio(filename=afilename,deviceindex=selecteddiviceinderx,chunksize=1024,volume=volume)
         else:
             print("done")
@@ -411,7 +413,8 @@ def starlistenerforstopaudio():
             title="audio stoped",
             message="audio stoped",
             app_name='DRAGON VOICE MODE'
-            )    
+            )
+            settingval.setValue("audio_stat","stopping")    
             stopaudio()
 
     def stopaudio():

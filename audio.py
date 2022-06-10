@@ -14,6 +14,7 @@ import pydub
 from pydub import AudioSegment
 import numpy as np
 import os
+from PyQt5.QtCore import QSettings
 
 
 global isaudioplaying
@@ -85,3 +86,5 @@ def stopplaying():
     voice_mode_ui.setisaudioplaying(False)
     globle_key_listener.itwasdone(True)
     duration[0] = 0
+    settingval = QSettings("Dragon Voide Mode","settings vals")
+    settingval.setValue("audio_stat","Idle")
