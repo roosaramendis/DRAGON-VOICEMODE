@@ -34,6 +34,9 @@ class Ui_Dialog(object):
         self.label = QtWidgets.QLabel(Dialog)
         self.label.setGeometry(QtCore.QRect(50, 160, 551, 21))
         self.label.setObjectName("label")
+        self.removeselcetedapp = QtWidgets.QPushButton(Dialog)
+        self.removeselcetedapp.setGeometry(QtCore.QRect(490, 360, 111, 23))
+        self.removeselcetedapp.setObjectName("removeselcetedapp")
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -46,3 +49,4 @@ class Ui_Dialog(object):
         self.info.setText(_translate("Dialog", "Info"))
         self.add_overlay_programs.setText(_translate("Dialog", "Add OverLay Programs"))
         self.label.setText(_translate("Dialog", "....................................................Overlay enabled programs...................................................."))
+        self.removeselcetedapp.setText(_translate("Dialog", "Remove Selected"))

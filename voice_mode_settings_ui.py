@@ -16,7 +16,8 @@ import os
 
 global mydir
 mydir = os.path.dirname(os.path.realpath(__file__))
-
+global selectedapps
+selectedapps = []
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -47,7 +48,10 @@ class Ui_Dialog(object):
         self.label.setObjectName(u"label")
         self.label.setGeometry(QtCore.QRect(50, 160, 551, 21))
         self.showlist()
-
+        self.removeselcetedapp = QtWidgets.QPushButton(Dialog)
+        self.removeselcetedapp.setObjectName(u"removeselcetedapp")
+        self.removeselcetedapp.setGeometry(QtCore.QRect(490, 360, 111, 23))
+        self.removeselcetedapp.clicked.connect(self.removeselected_clk)
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
@@ -76,7 +80,38 @@ class Ui_Dialog(object):
                 print(model)  
             self.listView.setModel(model)          
         except:
-            pass        
+            pass
+    def getcheckditems(self,models):
+        selectedapps.clear()
+        for index in range(models.rowCount()):
+            item = models.item(index)
+            print(str(QtCore.Qt.Checked))
+            if item.checkState() != QtCore.Qt.Checked:
+                print(item.text()+" getcheck"+" "+str(item.checkState()))
+                i = item.text()
+                selectedapps.append(i)
+                #selectedvideos.append(item.text()    
+        print(selectedapps)   
+
+    def removeselected_clk(self):
+        self.getcheckditems(model)
+        datainfile = pickle.load(open(mydir+"/"+"saves/overlayapps.dvm","rb"))
+        for index in range(model.rowCount()):
+            print(index)
+            try:
+                item = model.item(index)
+                if item.text() in selectedapps:
+                    datainfile.remove(str(item.text()))
+                    model.removeRow(index)
+            except:
+                pass        
+                
+
+        path =  mydir+"/saves"
+        pickle.dump((datainfile),open(path+"/overlayapps"+".dvm","wb"))
+        print("saving to "+str(path))   
+        self.showlist()
+                          
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
@@ -86,6 +121,7 @@ class Ui_Dialog(object):
         self.info.setText(_translate("Dialog", u"Info", None))
         self.add_overlay_programs.setText(_translate("Dialog", u"Add OverLay Programs", None))
         self.label.setText(_translate("Dialog", u"....................................................Overlay enabled programs....................................................", None))
+        self.removeselcetedapp.setText(_translate("Dialog", u"Remove Selected", None))
 
 
 if __name__ == "__main__":

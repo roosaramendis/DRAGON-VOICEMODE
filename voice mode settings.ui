@@ -91,6 +91,19 @@
     <string>....................................................Overlay enabled programs....................................................</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="removeselcetedapp">
+   <property name="geometry">
+    <rect>
+     <x>490</x>
+     <y>360</y>
+     <width>111</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Remove Selected</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

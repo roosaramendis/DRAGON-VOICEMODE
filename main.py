@@ -10,14 +10,57 @@ import threading
 from PyQt5.QtCore import QProcess
 import time
 import sys
+import detect_running_apps
+#from charset_normalizer import detect
 import voice_mode_ui, voice_mode_settings_ui,info,addprogramsforoverlay_py,overlay_py
-
+import subprocess
+import os
+import pickle
+import signal
 
 class openoverlay_thread(QtCore.QThread):
     def __init__(self, parent=None):
         super(openoverlay_thread,self).__init__(parent)
     def run(self):
-        print("treah called in main")
+        global isanyapprunning
+        isanyapprunning = False
+        while(True):
+            time.sleep(30)
+            mydir = os.path.dirname(os.path.realpath(__file__))
+            datainfile = pickle.load(open(mydir+"/"+"saves/overlayapps.dvm","rb"))
+            aplist = subprocess.check_output('tasklist',shell=True)
+            print("aplist"+str(aplist))
+            
+            for i in datainfile:
+                time.sleep(0.03)
+                print("datainfile"+str(datainfile))
+                if self.process_exists(str(i)):
+                    isanyapprunning = True
+                    if not(self.process_exists(str("overlay_py.exe"))):
+                        overlay_pro = subprocess.Popen([mydir+"/dist/overlay_py.exe"])
+                        print("overlay exect")
+                else:
+                    isanyapprunning = False
+            if not(isanyapprunning):
+                print("close overlay")
+                overlay_pro.kill()
+                #os.kill(overlay_pro.pid, signal.SIGTERM)                 
+
+    def process_exists(self,process_name):
+        call = 'TASKLIST', '/FI', 'imagename eq %s' % process_name
+        # use buildin check_output right away
+        output = subprocess.check_output(call).decode()
+        # check in last line for process name
+        last_line = output.strip().split('\r\n')[-1]
+        # because Fail message could be translated
+        return last_line.lower().startswith(process_name.lower())                    
+        #for i in (datainfile):
+            #if detect_running_apps.processlist().isprocess_runing(i):
+
+                
+                
+                
+        '''print("treah called in main")
         overlay = QtWidgets.QDialog()
         overlay.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint )#| Qt.X11BypassWindowManagerHint)
         overlay.setAttribute(Qt.WA_TransparentForMouseEvents,True)
@@ -25,7 +68,7 @@ class openoverlay_thread(QtCore.QThread):
         overlay.setAttribute(Qt.WA_X11DoNotAcceptFocus,True)
         ui = overlay_py.Ui_overlay()
         ui.setupUi(overlay)
-        overlay.exec_()
+        overlay.exec_()'''
         
 
 class ovelay(QtWidgets.QMainWindow, overlay_py.Ui_overlay):
