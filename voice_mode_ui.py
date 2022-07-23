@@ -125,7 +125,8 @@ class capturehk_thread(QtCore.QThread):
         
            
         while True:
-            time.sleep(0.02)
+            
+            time.sleep(float(self.settingval.value("loopdelaytime")))
             capturehkcalltimes[0] += 1
             if capturehkcalltimes[0] <2:
                 globle_key_listener.startcapture_hk_call()
@@ -179,7 +180,8 @@ class hearituself_thread(QtCore.QThread):
     def run(self):
         
         while True:
-            time.sleep(0.1)#0.5
+            settingval = QSettings("Dragon Voide Mode","settings vals")
+            time.sleep(float(settingval.value("loopdelaytime")))#0.5
             #print(str(audio.getisaudioplaying())+" in while")
             if audio.playaudio_class().getisaudioplaying() == True:
                 hearituselfcalledtimes[0] += 1
@@ -235,7 +237,9 @@ class Ui_voicemode(object):
             print(hotkeydict)
         except:
             pass
-        
+        settingval = QSettings("Dragon Voide Mode","settings vals")
+        self.settingval.setValue("loopdelaytime",0.05)
+
         self.centralwidget = QtWidgets.QWidget(voicemode)
         self.centralwidget.setObjectName("centralwidget")
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
@@ -537,8 +541,8 @@ class Ui_voicemode(object):
             
 
         if overridehearuselfdevice[0] == 0:
-            print('hearmyself default output device is '+str(deviceslist.index(sd.query_devices(kind='output')['name'])))
-            print('hearmyself default input device is '+str(deviceslist.index(sd.query_devices(kind='input')['name'])))
+            print('hearmyself default output device is '+str(deviceslist.index(sd.query_devices(kind='output')['name']))+"("+str(sd.query_devices(kind='output')['name'])+")")
+            print('hearmyself default input device is '+str(deviceslist.index(sd.query_devices(kind='input')['name']))+"("+str(sd.query_devices(kind='input')['name'])+")")
             self.thread3 = hearituself_thread(selectedinputdevice=deviceslist.index(sd.query_devices(kind='input')['name']),selectedoutputdevice=deviceslist.index(sd.query_devices(kind='output')['name']),volume=self.horizontalSlider.value())    
             if (self.settingval.value("enable notify")== 2):
                 self.thread3.notififunc.connect(self.notificationsys)
@@ -584,7 +588,7 @@ class Ui_voicemode(object):
             self.settingval.setValue("enable notify",0)
             self.settingval.setValue("overlay enable",0)
             self.settingval.setValue("audio_stat","Idle")
-
+            self.settingval.setValue("loopdelaytime",0.05)
         elif len(settingkeylist)==0:
             print("set def val")
             self.settingval.setValue("audio path",userpath+"/Music")
@@ -601,6 +605,7 @@ class Ui_voicemode(object):
             self.settingval.setValue("enable notify",0)
             self.settingval.setValue("overlay enable",0)
             self.settingval.setValue("audio_stat","Idle")
+            self.settingval.setValue("loopdelaytime",0.05)
 
     def getsettingvals(self):
         self.settingval = QSettings("Dragon Voide Mode","settings vals")

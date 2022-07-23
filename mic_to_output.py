@@ -90,7 +90,8 @@ def startmictooutputforhearaudio(inputdeviceindex,outputdeviceindex,volume):
 
     def callback(indata, outdata, frames, time, status):
         if status:
-            print(status)
+            print(status+" stats")
+        settingval = QSettings("Dragon Voide Mode","settings vals")    
         outdata[:] = (indata) * settingval.value("hearmyselfvolume")/100
   
     print("mic input stated")
@@ -105,9 +106,11 @@ def startmictooutputforhearaudio(inputdeviceindex,outputdeviceindex,volume):
         print('#' * 80)'''
         #input()
         while sd.Stream.active:
-            time.sleep(0.02)
+            settingval = QSettings("Dragon Voide Mode","settings vals")
+            time.sleep(float(settingval.value("loopdelaytime")))
             if audio.playaudio_class().getisaudioplaying() == False:
                 print("stopthis shit")
+                settingval.setValue("audio_stat","Idle")
                 break    
 
 
@@ -185,7 +188,8 @@ def startmictooutput(inputdeviceindex,outputdeviceindex):
                     channels=args.channels, callback=callback):
 
         while sd.Stream.active:
-            time.sleep(0.02)
+            settingval = QSettings("Dragon Voide Mode","settings vals")
+            time.sleep(float(settingval.value("loopdelaytime")))
                
 
 def stopmictoinput():

@@ -1,3 +1,4 @@
+from time import time
 from tkinter import EXCEPTION
 from tracemalloc import stop
 from turtle import st
@@ -12,6 +13,7 @@ import threading
 from PyQt5.QtCore import QSettings
 from plyer.utils import platform
 from plyer import notification
+import time
 
 global modifirekeys
 modifirekeys = ["Key.alt_l","Key.alt_gr","Key.ctrl_l","Key.shift","Key.ctrl_r","Key.shift_r"]

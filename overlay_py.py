@@ -15,6 +15,9 @@ from win32api import GetSystemMetrics
 from PyQt5.QtCore import QSettings
 import time
 
+
+
+
 class getaudiostats_thread(QtCore.QThread):
     audiostat = QtCore.pyqtSignal(str)
     def __init__(self, parent=None):
@@ -51,6 +54,7 @@ class Ui_overlay(object):
         self.settingval.setValue("audio_stat","Idle")
         print("overlaystarted")
         self.stats.setText(str(self.settingval.value("audio_stat")))
+        
         self.retranslateUi(overlay)
         self.show_stats()
         QtCore.QMetaObject.connectSlotsByName(overlay)

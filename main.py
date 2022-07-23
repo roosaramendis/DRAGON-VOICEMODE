@@ -25,25 +25,35 @@ class openoverlay_thread(QtCore.QThread):
         global isanyapprunning
         isanyapprunning = False
         while(True):
-            time.sleep(30)
+            time.sleep(15)
             mydir = os.path.dirname(os.path.realpath(__file__))
             datainfile = pickle.load(open(mydir+"/"+"saves/overlayapps.dvm","rb"))
-            aplist = subprocess.check_output('tasklist',shell=True)
-            print("aplist"+str(aplist))
+            #aplist = subprocess.check_output('tasklist',shell=True)
+            #print("aplist"+str(aplist))
             
             for i in datainfile:
-                time.sleep(0.03)
+                try:
+                    settingval = QSettings("Dragon Voide Mode","settings vals")
+                    time.sleep(float(settingval.value("loopdelaytime")))
+                except:
+                    pass    
                 print("datainfile"+str(datainfile))
                 if self.process_exists(str(i)):
                     isanyapprunning = True
                     if not(self.process_exists(str("overlay_py.exe"))):
-                        overlay_pro = subprocess.Popen([mydir+"/dist/overlay_py.exe"])
+                        overlay_pro = subprocess.Popen([mydir+"/dist/overlay_py.exe"],shell=True)
                         print("overlay exect")
                 else:
                     isanyapprunning = False
             if not(isanyapprunning):
-                print("close overlay")
-                overlay_pro.kill()
+                try:
+                    print("close overlay")
+                    print(overlay_pro.pid)
+                    
+                    subprocess.Popen("TASKKILL /F /PID {pid} /T".format(pid=overlay_pro.pid))
+                    #overlay_pro.terminate()
+                except:
+                    pass
                 #os.kill(overlay_pro.pid, signal.SIGTERM)                 
 
     def process_exists(self,process_name):
