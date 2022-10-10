@@ -153,19 +153,17 @@ def startmictooutput(inputdeviceindex,outputdeviceindex):
 
 
     def pitchchange(data,pitch):
+        
         shift = pitch//100
-        da = data
-        print(da)
-        left, right = da[0::2], da[1::2]  # left and right channel
-        lf= np.fft.rfft(da)
-        lf= np.roll(lf, shift)
-        lf[0:shift] = 0
-        nl= np.fft.irfft(lf)
-        ns = nl
-        #df= np.multiply(da,np.roll(da,shift))
-        df= np.multiply(da,ns)
-        print(df)
-        return df
+        freq = np.fft.rfft(data)
+        N = len(freq)
+        sh_freq = np.zeros(N, freq.dtype)
+        S = int(np.round(pitch if pitch > 0 else N + pitch, 0))
+        s = int(N-S)
+        sh_freq[:S] = freq[s:]
+        sh_freq[S:] = freq[:s]
+        sh_chunk = np.fft.irfft(sh_freq)
+        return sh_chunk.astype(data.dtype)
 
     def callback(indata, outdata, frames, time, status):
         if status:
