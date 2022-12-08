@@ -1,5 +1,6 @@
 from pynput.keyboard import Key, Listener
 import re
+import time
 
 class globalhotkeysys(object):
     def __init__(self):
@@ -11,7 +12,7 @@ class globalhotkeysys(object):
         self.on_releasetimes = [0]
         self.modifirekeys = ["Key.alt_l","Key.alt_gr","Key.ctrl_l","Key.shift","Key.ctrl_r","Key.shift_r"]
 
-    def start_listen(self):
+    def start_listen(self,onpresshotkeycall):
         def on_press(key):
             strkey = str(key)
             print(strkey+'instarlsitnerfun')
@@ -21,7 +22,7 @@ class globalhotkeysys(object):
             try:
                 if not(re.search("Key.",str(key))):
                     print(self.keyboardnumbers)
-                    if not(str(key).replace("'","") in self.keyboardnumbers)and (self.currentkey[0] =="Key.ctrl_l" or self.tcurrentkey[0] =="Key.ctrl_r"):
+                    if not(str(key).replace("'","") in self.keyboardnumbers)and (self.currentkey[0] =="Key.ctrl_l" or self.currentkey[0] =="Key.ctrl_r"):
                         print(str(key))
                         formatedkeyhex = str(key).replace("'\\x","")
                         formatedkeyhex = formatedkeyhex.replace("'","")
@@ -90,6 +91,8 @@ class globalhotkeysys(object):
                     pressedkeyfin = pressedkey[:-1]   
                     print(str(pressedkeyfin)+" pressed hotkey")    
                     self.currentkey.clear()
+                    onpresshotkeycall(pressedkeyfin)
+                    print("say here we go  again mf")
 
                 except:
                     pass
@@ -104,6 +107,12 @@ class globalhotkeysys(object):
                 on_press=on_press,
                 on_release=on_release) as listener:
             listener.join()    
-        
+'''def onhotkeypress(hotkeystrings):
+    c= 0
+    while c < 20:
+        print(hotkeystrings+" fuck")
+        time.sleep(1)
+        c+=1
+
 gk = globalhotkeysys()
-gk.start_listen()
+gk.start_listen(onpresshotkeycall = onhotkeypress)'''

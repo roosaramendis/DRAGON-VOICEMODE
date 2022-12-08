@@ -14,6 +14,7 @@ from PyQt5.QtCore import QSettings
 from plyer.utils import platform
 from plyer import notification
 import time
+import global_hotkey_sys
 
 global modifirekeys
 modifirekeys = ["Key.alt_l","Key.alt_gr","Key.ctrl_l","Key.shift","Key.ctrl_r","Key.shift_r"]
@@ -38,143 +39,8 @@ def itwasdone(doneornot):
     currentkey.clear()
     workdone[0] = doneornot 
 
+
 def starlistener_old(hotkeydict,selecteddiviceinderx,volume=1):
-    def callplayaudio(pressedkey):
-        print(pressedkey)
-        calledtimes[0] +=1
-        if calledtimes[0] < 2:
-            afilename = hotkeydict[pressedkey]
-            print(volume)
-            audio.playaudio_class().playaudio(filename=afilename,deviceindex=selecteddiviceinderx,chunksize=1024,volume=volume)
-        else:
-            print("done")
-            calledtimes[0] = 0
-            currentkey.clear()
-
-
-
-    def on_press(key):
-        strkey = str(key)
-        try:
-            if not(re.search("Key.",str(key))):
-                print(keyboardnumbers)
-                if not(str(key).replace("'","") in keyboardnumbers):
-                    print(str(key))
-                    formatedkeyhex = str(key).replace("'\\x","")
-                    formatedkeyhex = formatedkeyhex.replace("'","")
-                    print(formatedkeyhex)
-                    print(int(formatedkeyhex, 16))
-                    keyindex = int(formatedkeyhex, 16)
-                    if keyindex < 27:
-                        print('{0} pressed'.format(
-                        alphabet[keyindex-1]))
-                        strkey = str(alphabet[keyindex-1])
-        except Exception as e:
-            print(e)
-            print('{0} pressed'.format(
-            key))    
-            strkey = str(key) 
-        
-        currentkey.append(strkey)   
-        print(str(key))
-        
-        if currentkey[0] in modifirekeys:
-            print("must be have second or more keys") 
-            if strkey != currentkey[0] and len(currentkey) <2:
-                currentkey.append(strkey)
-        else:
-            currentkey.clear()
-            currentkey.append(strkey)        
-        print(currentkey)    
-    def on_release(key):
-        print('{0} release'.format(
-            key))
-        if len(currentkey) >1:
-            try:
-                print(currentkey[0]+"+"+str(currentkey[1]).replace("'","") +" "+str(hotkeydict.keys()))
-                for i in hotkeydict.keys():
-                    if currentkey[0]+"+"+str(currentkey[1]).replace("'","") == i:
-                        print("play audio of key "+str(i))
-                        callplayaudio(str(i))    
-                currentkey.clear()
-            except:
-                pass
-        """if key == Key.esc:
-            # Stop listener
-            return False"""
-
-    # Collect events until released
-    print(str(hotkeydict))
-    with Listener(
-            on_press=on_press,
-            on_release=on_release) as listener:
-        listener.join()
-  
-def starcapture_hk_old():
-
-    def setstophk(hkey):
-        settingval = QSettings("Dragon Voide Mode","settings vals")
-        captrdkey = hkey[0]+"+"+hkey[1]
-        settingval.setValue("stophotkey",captrdkey)
-        print(captrdkey)
-
-    def on_press(key):
-        strkey = str(key)
-        try:
-            if not(re.search("Key.",str(key))):
-                print(keyboardnumbers)
-                if not(str(key).replace("'","") in keyboardnumbers):
-                    print(str(key))
-                    formatedkeyhex = str(key).replace("'\\x","")
-                    formatedkeyhex = formatedkeyhex.replace("'","")
-                    print(formatedkeyhex)
-                    print(int(formatedkeyhex, 16))
-                    keyindex = int(formatedkeyhex, 16)
-                    if keyindex < 27:
-                        print('{0} pressed'.format(
-                        alphabet[keyindex-1]))
-                        strkey = str(alphabet[keyindex-1])
-        except Exception as e:
-            print(e)
-            print('{0} pressed'.format(
-            key))    
-            strkey = str(key)
-        
-        currentkey1.append(strkey)   
-        print(currentkey1)
-        
-        if currentkey1[0] in ["Key.alt_l","Key.alt_gr","Key.ctrl_l"]:
-            print("must be have second or more keys") 
-            if strkey != currentkey1[0] and len(currentkey1) <2:
-                currentkey1.append(strkey)
-        else:
-            currentkey1.clear()
-            currentkey1.append(strkey)        
-        print(str(currentkey1)+"on press")    
-    def on_release(key):
-        print('{0} release'.format(
-            key))
-        if len(currentkey1) >1:
-            try:
-                print(currentkey1[0]+"+"+str(currentkey1[1]).replace("'",""))
-                setstophk(currentkey1)
-                print(str(currentkey1)+"on releas")
-                #return currentkey    
-                currentkey.clear()
-            except:
-                pass
-        """if key == Key.esc:
-            # Stop listener
-            return False"""
-
-    # Collect events until released
-    with Listener(
-            on_press=on_press,
-            on_release=on_release) as listener:
-        listener.join()
-
-
-def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
 
     def callplayaudio(pressedkey):
         print(pressedkey)
@@ -293,7 +159,37 @@ def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
             on_release=on_release) as listener:
         listener.join()
 
-def starcapture_hk():
+def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
+
+    def callplayaudio(pressedkey):
+        print(pressedkey)
+        calledtimes[0] +=1
+        if calledtimes[0] < 2:
+            '''if len(pressedkey)>2:
+                pressedkeystr = pressedkey[0]+"+"+pressedkey[1]+"+"+pressedkey[2].replace("'","")
+            elif len(pressedkey)>1:
+                pressedkeystr = pressedkey[0]+"+"+pressedkey[1].replace("'","")
+            elif len(pressedkey) == 1:
+                pressedkeystr = pressedkey[0].replace("'","")'''
+            pressedkeystr = pressedkey   
+            afilename = hotkeydict[pressedkeystr]
+            #print(volume)
+            settingval = QSettings("Dragon Voide Mode","settings vals")
+            volume = settingval.value("soundboardvolume")/100
+            print(volume)
+            settingval = QSettings("Dragon Voide Mode","settings vals")
+            settingval.setValue("audio_stat","Playing")
+            audio.playaudio_class().playaudio(filename=afilename,deviceindex=selecteddiviceinderx,chunksize=1024,volume=volume)
+        else:
+            print("done")
+            calledtimes[0] = 0
+            currentkey.clear()
+
+    ghs = global_hotkey_sys.globalhotkeysys()
+    ghs.start_listen(onpresshotkeycall = callplayaudio)
+
+
+def starcapture_hk_old():
     
     def setstophk(hkey):
         settingval = QSettings("Dragon Voide Mode","settings vals")
@@ -397,7 +293,25 @@ def starcapture_hk():
             on_release=on_release) as listener:
         listener.join()
 
-def starlistenerforstopaudio():
+
+def starcapture_hk():
+    
+    def setstophk(hkey):
+        settingval = QSettings("Dragon Voide Mode","settings vals")
+        if len(hkey)>2:
+            captrdkey = hkey[0]+"+"+hkey[1]+"+"+hkey[2]
+        elif len(hkey)>1:
+            captrdkey = hkey[0]+"+"+hkey[1]
+        elif len(hkey) == 1:
+            captrdkey = hkey[0]        
+        #settingval.setValue("temphkey",captrdkey.replace("'",""))
+        settingval.setValue("temphkey",hkey)
+        print(captrdkey)
+
+    ghs1 = global_hotkey_sys.globalhotkeysys()
+    ghs1.start_listen(onpresshotkeycall = setstophk)
+
+def starlistenerforstopaudio_old():
     
     def stopaudio_call(hkey):
         settingval = QSettings("Dragon Voide Mode","settings vals")
@@ -514,6 +428,37 @@ def starlistenerforstopaudio():
             on_release=on_release) as listener:
         listener.join()
         
+
+def starlistenerforstopaudio():
+    
+    def stopaudio_call(hkey):
+        settingval = QSettings("Dragon Voide Mode","settings vals")
+        '''if len(hkey)>2:
+            captrdkey = hkey[0]+"+"+hkey[1]+"+"+hkey[2].replace("'","")
+        elif len(hkey)>1:
+            captrdkey = hkey[0]+"+"+hkey[1].replace("'","")
+        elif len(hkey) == 1:
+            captrdkey = hkey[0]
+        print(captrdkey)'''
+        print("cptstopkey")  
+        captrdkey = hkey  
+        if captrdkey in settingval.value("stophotkey"):
+
+            '''notification.notify(
+            title="audio stoped",
+            message="audio stoped",
+            app_name='DRAGON VOICE MODE'
+            )'''
+            settingval.setValue("audio_stat","stopping")    
+            stopaudio()
+
+    def stopaudio():
+        audio.stopplaying()
+
+    ghs2 = global_hotkey_sys.globalhotkeysys()
+    ghs2.start_listen(onpresshotkeycall = stopaudio_call)
+
+
 
 def startcapture_hk_call():
     t1 = threading.Thread(target=starcapture_hk)
