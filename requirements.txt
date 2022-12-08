@@ -1,0 +1,8 @@
+PyQt5
+PyAudio
+sounddevice
+pydub
+numpy
+pynput
+plyer
+wmi
