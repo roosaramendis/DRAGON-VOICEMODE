@@ -92,7 +92,7 @@ class globalhotkeysys(object):
                     print(str(pressedkeyfin)+" pressed hotkey")    
                     self.currentkey.clear()
                     onpresshotkeycall(pressedkeyfin)
-                    print("say here we go  again mf")
+                    print("say here we go  again")
 
                 except:
                     pass
