@@ -40,7 +40,7 @@ def itwasdone(doneornot):
     workdone[0] = doneornot 
 
 
-def starlistener_old(hotkeydict,selecteddiviceinderx,volume=1):
+'''def starlistener_old(hotkeydict,selecteddiviceinderx,volume=1):
 
     def callplayaudio(pressedkey):
         print(pressedkey)
@@ -157,7 +157,7 @@ def starlistener_old(hotkeydict,selecteddiviceinderx,volume=1):
     with Listener(
             on_press=on_press,
             on_release=on_release) as listener:
-        listener.join()
+        listener.join()'''
 
 def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
 
@@ -189,7 +189,7 @@ def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
     ghs.start_listen(onpresshotkeycall = callplayaudio)
 
 
-def starcapture_hk_old():
+'''def starcapture_hk_old():
     
     def setstophk(hkey):
         settingval = QSettings("Dragon Voide Mode","settings vals")
@@ -291,7 +291,7 @@ def starcapture_hk_old():
     with Listener(
             on_press=on_press,
             on_release=on_release) as listener:
-        listener.join()
+        listener.join()'''
 
 
 def starcapture_hk():
@@ -311,7 +311,7 @@ def starcapture_hk():
     ghs1 = global_hotkey_sys.globalhotkeysys()
     ghs1.start_listen(onpresshotkeycall = setstophk)
 
-def starlistenerforstopaudio_old():
+'''def starlistenerforstopaudio_old():
     
     def stopaudio_call(hkey):
         settingval = QSettings("Dragon Voide Mode","settings vals")
@@ -427,7 +427,7 @@ def starlistenerforstopaudio_old():
             on_press=on_press,
             on_release=on_release) as listener:
         listener.join()
-        
+        '''
 
 def starlistenerforstopaudio():
     
@@ -449,6 +449,7 @@ def starlistenerforstopaudio():
             message="audio stoped",
             app_name='DRAGON VOICE MODE'
             )'''
+            print("yamatttee")
             settingval.setValue("audio_stat","stopping")    
             stopaudio()
 

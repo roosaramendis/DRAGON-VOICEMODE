@@ -140,7 +140,7 @@ class keyboardlistenerto_stopaudio_thread(QtCore.QThread):
         super(keyboardlistenerto_stopaudio_thread,self).__init__(parent)
 
     def run(self):
-        globle_key_listener.starlistenerforstopaudio_call()
+        globle_key_listener.starlistenerforstopaudio()
         '''while True:
             time.sleep(0.5)
             #print(str(audio.playaudio_class().getisaudioplaying())+" in while")

@@ -6,6 +6,7 @@ from PyQt5.QtCore import QSettings,Qt
 import threading
 from PyQt5.QtCore import QProcess
 import time
+import global_hotkey_sys
 import sys
 import detect_running_apps
 #from charset_normalizer import detect
@@ -13,6 +14,8 @@ import voice_mode_ui, voice_mode_settings_ui,info,addprogramsforoverlay_py,overl
 import subprocess
 import os
 import pickle
+
+
 
 class openoverlaydialog_thread(QtCore.QThread):
     def __init__(self, parent=None):
@@ -28,10 +31,10 @@ class openoverlaydialog_thread(QtCore.QThread):
 
 
 
-class overlaydialog(QtWidgets.QMainWindow, overlay_dialog_py.Ui_Dialog):
+'''class overlaydialog(QtWidgets.QMainWindow, overlay_dialog_py.Ui_Dialog):
     def __init__(self, parent=None):
         super (overlaydialog, self).__init__(parent)
-        self.setupUi(self)
+        self.setupUi(self)'''
 
 
 
@@ -43,9 +46,20 @@ class overlay_window(QtWidgets.QMainWindow, overlay_py.Ui_overlay):
         #self.t1 = openoverlaydialog_thread()
         #self.t1.start()
         #self.actionsettings.triggered.connect(self.on_pushButton_clicked)
-        self.dialog = overlaydialog(self)
+        '''self.dialog = overlaydialog(self)
+        
+        #self.thread_ODhotkey.when_OD_hotkeypressed.connect(self.call_overlaydailog) 
+        
+    
+    def call_overlaydailog(self,pressedkey):
+        print(pressedkey+" nananani")
+        OD_hotkey = "Key.alt_gr+`" #("hotkeyfor overlay dailog")
+        if pressedkey == OD_hotkey:
+            print("open overlay")
+            self.dialog.show()
+
     def on_pushButton_clicked(self):
-        self.dialog.show()    
+        self.dialog.show()  '''  
 
 
 

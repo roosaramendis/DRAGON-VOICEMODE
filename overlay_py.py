@@ -14,9 +14,27 @@ from PyQt5.QtCore import Qt
 from win32api import GetSystemMetrics
 from PyQt5.QtCore import QSettings
 import time
+import global_hotkey_sys
+import overlay_dialog_py
 
+class overlaydialog(QtWidgets.QMainWindow, overlay_dialog_py.Ui_Dialog):
+    def __init__(self, parent=None):
+        super (overlaydialog, self).__init__(parent)
+        self.setupUi(self)
 
+class keyboardlistenerto_openoverlaydailog_thread(QtCore.QThread):
+    when_OD_hotkeypressed = QtCore.pyqtSignal(str)
+    def __init__(self,parent=None):
+        super(keyboardlistenerto_openoverlaydailog_thread,self).__init__(parent)
 
+    def run(self):
+        print("dalidala")
+        def on_OD_hotkeypressed(pessedkey):
+            print(pessedkey+" rimmpanaaia")
+            self.when_OD_hotkeypressed.emit(pessedkey)
+
+        ghs3 = global_hotkey_sys.globalhotkeysys()
+        ghs3.start_listen(onpresshotkeycall = on_OD_hotkeypressed)
 
 class getaudiostats_thread(QtCore.QThread):
     audiostat = QtCore.pyqtSignal(str)
@@ -57,6 +75,7 @@ class Ui_overlay(object):
         
         self.retranslateUi(overlay)
         self.show_stats()
+        self.startlistnertoODhotkey()
         QtCore.QMetaObject.connectSlotsByName(overlay)
 
     def show_stats(self):
@@ -65,10 +84,25 @@ class Ui_overlay(object):
         self.t1.start()
         self.t1.audiostat.connect(self.stats.setText)
 
+    def startlistnertoODhotkey(self):
+        print("chchchc")
+        self.thread_ODhotkey = keyboardlistenerto_openoverlaydailog_thread()
+        self.thread_ODhotkey.start()
+        self.thread_ODhotkey.when_OD_hotkeypressed.connect(self.call_overlaydailog)    
+    
+    def call_overlaydailog(self,pressedkey):
+        print(pressedkey+" nananani")
+        OD_hotkey = "Key.alt_gr+`" #("hotkeyfor overlay dailog")
+        self.dialog = overlaydialog(None)
+        if pressedkey == OD_hotkey:
+            print("open overlay 1")
+            self.dialog.show()  
     def retranslateUi(self, overlay):
         _translate = QtCore.QCoreApplication.translate
         overlay.setWindowTitle(_translate("overlay", "overlay"))
         #self.stats.setText(_translate("overlay", "statics"))
+
+    
 
 
 if __name__ == "__main__":
