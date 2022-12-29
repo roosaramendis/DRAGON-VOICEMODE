@@ -440,7 +440,14 @@ class Ui_voicemode(object):
         self.startcapture_hk_bt = QtWidgets.QPushButton(self.tab_2)
         self.startcapture_hk_bt.setObjectName(u"startcapture_hk_bt")
         self.startcapture_hk_bt.setGeometry(QtCore.QRect(210, 270, 151, 23))
-        self.startcapture_hk_bt.clicked.connect(self.startcapture_hk_bt_clk)   
+        self.startcapture_hk_bt.clicked.connect(self.startcapture_hk_bt_clk)
+        self.sethotkeytooverlaydialog_lb = QtWidgets.QLabel(self.tab_2)
+        self.sethotkeytooverlaydialog_lb.setObjectName(u"sethotkeytostop_lb")
+        self.sethotkeytooverlaydialog_lb.setGeometry(QtCore.QRect(10, 310, 151, 21))
+        self.startcapture_hk_tooverlaydialog_bt = QtWidgets.QPushButton(self.tab_2)
+        self.startcapture_hk_tooverlaydialog_bt.setObjectName(u"startcapture_hk_tooverlaydialog_bt")
+        self.startcapture_hk_tooverlaydialog_bt.setGeometry(QtCore.QRect(210, 310, 151, 23))
+        self.startcapture_hk_tooverlaydialog_bt.clicked.connect(self.startcapture_hk_tooverlaydialog_bt_clk)   
         self.play = QtWidgets.QPushButton(self.soundboard)
         self.play.setObjectName(u"play")
         self.play.setGeometry(QtCore.QRect(10, 190, 41, 23))
@@ -589,6 +596,7 @@ class Ui_voicemode(object):
             self.settingval.setValue("overlay enable",0)
             self.settingval.setValue("audio_stat","Idle")
             self.settingval.setValue("loopdelaytime",0.05)
+            self.settingval.setValue("opacity",80)
         elif len(settingkeylist)==0:
             print("set def val")
             self.settingval.setValue("audio path",userpath+"/Music")
@@ -606,6 +614,7 @@ class Ui_voicemode(object):
             self.settingval.setValue("overlay enable",0)
             self.settingval.setValue("audio_stat","Idle")
             self.settingval.setValue("loopdelaytime",0.05)
+            self.settingval.setValue("opacity",80)
 
     def getsettingvals(self):
         self.settingval = QSettings("Dragon Voide Mode","settings vals")
@@ -834,6 +843,7 @@ class Ui_voicemode(object):
             print(str(enumerate(dic)))
             tablemodel = TableModel(dic)
             self.tableView.setModel(tablemodel)
+            self.tableView.resizeColumnsToContents()
         except:
             pass   
         '''for row, col in enumerate(dic):
@@ -928,7 +938,25 @@ class Ui_voicemode(object):
                 
                 
             except:
-                pass        
+                pass 
+
+    def startcapture_hk_tooverlaydialog_bt_clk(self):
+    
+        if self.startcapture_hk_tooverlaydialog_bt.text() == "Start capture":
+            print("start capture")
+            self.thread5 = capturehk_thread()
+            self.thread5.start()
+            self.thread5.setTerminationEnabled(True)
+            self.startcapture_hk_tooverlaydialog_bt.setText("Stop chapture")
+            self.thread5.capturedhk.connect(self.sethotkeytooverlaydialog_lb.setText)
+        elif self.startcapture_hk_tooverlaydialog_bt.text() == "Stop chapture":
+            print("stop capture")
+            try:
+                self.thread5.terminate()
+                self.settingval.setValue("overlaydialoghotkey",self.sethotkeytooverlaydialog_lb.text())
+                self.startcapture_hk_tooverlaydialog_bt.setText("Start capture")
+            except:
+                pass                 
     
     def notificationsys(title,msg):
         print('notify'+str(msg))
@@ -979,6 +1007,8 @@ class Ui_voicemode(object):
         self.startcapture_hk_bt.setText(_translate("voicemode", u"Start capture hotkey", None))
         self.startcapturekeys_sb_bt.setText(_translate("voicemode", u"Start capture", None))
         self.capturekey_sb_lb.setText(_translate("voicemode", u"Start capture hot key", None))
+        self.sethotkeytooverlaydialog_lb.setText(_translate("voicemode", u"Set hotkey to Overlay Dialog", None))
+        self.startcapture_hk_tooverlaydialog_bt.setText(_translate("voicemode", u"Start capture", None))
         try:    
             self.note.setText(_translate("voicemode", u"still in devolopment", None))
             self.pitchval.setText(_translate("voicemode", u"Pitch", None))

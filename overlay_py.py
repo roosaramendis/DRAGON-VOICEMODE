@@ -92,7 +92,8 @@ class Ui_overlay(object):
     
     def call_overlaydailog(self,pressedkey):
         print(pressedkey+" nananani")
-        OD_hotkey = "Key.alt_gr+`" #("hotkeyfor overlay dailog")
+        #self.settingval.value("overlaydialoghotkey")
+        OD_hotkey = self.settingval.value("overlaydialoghotkey") #("hotkeyfor overlay dailog")
         self.dialog = overlaydialog(None)
         if pressedkey == OD_hotkey:
             print("open overlay 1")

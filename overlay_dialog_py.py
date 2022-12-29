@@ -9,7 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QSettings,Qt,QFile,QTextStream
+from PyQt5.QtCore import QSettings,Qt,QFile,QTextStream,QSettings
 import pickle
 import os
 
@@ -55,7 +55,7 @@ class Ui_Dialog(object):
         Dialog.setLayoutDirection(QtCore.Qt.LeftToRight)
         Dialog.setAttribute(Qt.WA_X11DoNotAcceptFocus,True)
         Dialog.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint )
-        Dialog.setWindowOpacity(0.8)
+        
         stylef = QFile("style1.css") 
         stylef.open(QFile.ReadOnly | QFile.Text)
         stylesheet = QTextStream(stylef)
@@ -69,6 +69,16 @@ class Ui_Dialog(object):
             print(hotkeydict)
         except:
             pass
+        try:
+            self.settingval = QSettings("Dragon Voide Mode","settings vals")
+        except:
+            pass
+        try:
+
+            Dialog.setWindowOpacity(float(self.settingval.value("opacity"))/100)    
+        except:
+            Dialog.setWindowOpacity(0.8)
+
         self.tabWidget = QtWidgets.QTabWidget(Dialog)
         self.tabWidget.setGeometry(QtCore.QRect(10, 100, 821, 561))
         self.tabWidget.setObjectName("tabWidget")
@@ -92,6 +102,8 @@ class Ui_Dialog(object):
         self.hearmyselfvolume_sb.setMaximum(200)
         self.hearmyselfvolume_sb.setStepType(QtWidgets.QAbstractSpinBox.AdaptiveDecimalStepType)
         self.hearmyselfvolume_sb.setObjectName("hearmyselfvolume_sb")
+        self.hearmyselfvolume_sb.setValue(int(self.settingval.value("hearmyselfvolume")))
+        self.hearmyselfvolume_sb.valueChanged.connect(self.sethearmyselfvolume)
         self.label = QtWidgets.QLabel(Dialog)
         self.label.setGeometry(QtCore.QRect(130, 50, 191, 31))
         self.label.setObjectName("label")
@@ -101,9 +113,27 @@ class Ui_Dialog(object):
         self.soundboardvolume_sb.setMaximum(200)
         self.soundboardvolume_sb.setStepType(QtWidgets.QAbstractSpinBox.AdaptiveDecimalStepType)
         self.soundboardvolume_sb.setObjectName("soundboardvolume_sb")
+        self.soundboardvolume_sb.setValue(int(self.settingval.value("soundboardvolume")))
+        self.soundboardvolume_sb.valueChanged.connect(self.setsoundboardvolume)
+        
+        self.opacity_sb = QtWidgets.QSpinBox(Dialog)
+        self.opacity_sb.setGeometry(QtCore.QRect(640, 50, 81, 31))
+        self.opacity_sb.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.opacity_sb.setMaximum(200)
+        self.opacity_sb.setStepType(QtWidgets.QAbstractSpinBox.AdaptiveDecimalStepType)
+        self.opacity_sb.setObjectName("opacity_sb")
+        try:
+            self.opacity_sb.setValue(int(self.settingval.value("opacity")))
+        except:
+            pass    
+        self.opacity_sb.valueChanged.connect(self.set_opacity)
+
         self.label_2 = QtWidgets.QLabel(Dialog)
-        self.label_2.setGeometry(QtCore.QRect(480, 50, 171, 31))
+        self.label_2.setGeometry(QtCore.QRect(480, 50, 150, 31))
         self.label_2.setObjectName("label_2")
+        self.label_3 = QtWidgets.QLabel(Dialog)
+        self.label_3.setGeometry(QtCore.QRect(730, 50, 150, 31))
+        self.label_3.setObjectName("label_3")
         if len(hotkeydict.keys()) != 0:
             self.settableview(hotkeydict)
         self.retranslateUi(Dialog)
@@ -119,8 +149,20 @@ class Ui_Dialog(object):
             print(str(enumerate(dic)))
             tablemodel = TableModel(dic)
             self.tableView.setModel(tablemodel)
+            self.tableView.resizeColumnsToContents()
         except:
             pass  
+    
+    def sethearmyselfvolume(self,value):
+        self.settingval.setValue("hearmyselfvolume",value)
+
+    def setsoundboardvolume(self,value):
+        self.settingval.setValue("soundboardvolume",value)
+
+    def set_opacity(self,value):
+        self.settingval.setValue("opacity",value)
+        
+        #Dialog.setWindowOpacity(float(self.settingval.value("opacity"))/100)
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
@@ -129,7 +171,7 @@ class Ui_Dialog(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("Dialog", "Tab 2"))
         self.label.setText(_translate("Dialog", "hear my self volume"))
         self.label_2.setText(_translate("Dialog", "sound board volume"))
-        
+        self.label_3.setText(_translate("Dialog", "opatcity"))
 
 
 if __name__ == "__main__":
