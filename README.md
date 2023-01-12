@@ -41,12 +41,19 @@ im currently working to finish the last stages of development, with 90% of the w
 Setting up Dragon Voice Mode is easy. Follow these steps:
 
 <b>1. First, set your microphone as the input device in your computer's settings. </b>
+<div align="center">
 
-    ![Step 1](https://github.com/roosaramendis/DRAGON-VOICEMODE/blob/game_overlay/preview_images/step%201.png)
+[![Step 1](https://github.com/roosaramendis/DRAGON-VOICEMODE/blob/game_overlay/preview_images/step%201.png)]()
+
+</div>
 
 <b>2. Next, select a virtual audio device as the output device in the software. We recommend using VB-Cable as your virtual device, but you can use any virtual audio device.</b>
 
-    ![Step 2](https://github.com/roosaramendis/DRAGON-VOICEMODE/blob/game_overlay/preview_images/step%202.png)
+<div align="center">
+
+[![Step 2](https://github.com/roosaramendis/DRAGON-VOICEMODE/blob/game_overlay/preview_images/step%202.png)]()
+
+</div>
 
 <b>3. After that, set your input audio device in Windows settings to the virtual audio device output as your input device. Then you can set other software or games input device as default.
 
