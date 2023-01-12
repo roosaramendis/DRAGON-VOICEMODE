@@ -2,15 +2,15 @@
 
 <div align="center">
 
-[![Github All Releases](https://img.shields.io/github/downloads/roosaramendis/DRAGON-VOICEMODE/total.svg)]() [![discord badge]][discord link]
+[![Github All Releases](https://img.shields.io/github/downloads/roosaramendis/DRAGON-VOICEMODE/total?style=for-the-badge)]() [![discord badge]][discord link]
 
 [![latest release badge]][latest release link] [![github open issues badge]][github open issues link]
 
-[discord badge]: https://flat.badgen.net/badge/icon/discord?icon=discord&label
+[discord badge]: https://img.shields.io/discord/682183255734354002?label=Discord&style=for-the-badge
 [discord link]: https://discord.gg/cXxv2KtP
-[github open issues badge]: https://flat.badgen.net/github/open-issues/micromatch/micromatch
+[github open issues badge]: https://img.shields.io/bitbucket/issues/roosaramendis/DRAGON-VOICEMODE?style=for-the-badge
 [github open issues link]: https://github.com/roosaramendis/DRAGON-VOICEMODE/issues
-[latest release badge]: https://flat.badgen.net/github/release/babel/babel
+[latest release badge]: https://img.shields.io/github/v/tag/roosaramendis/DRAGON-VOICEMODE?style=for-the-badge
 [latest release link]: https://github.com/roosaramendis/DRAGON-VOICEMODE/releases
 
 
@@ -40,15 +40,15 @@ im currently working to finish the last stages of development, with 90% of the w
 
 Setting up Dragon Voice Mode is easy. Follow these steps:
 
-1. First, set your microphone as the input device in your computer's settings. 
+<b>1. First, set your microphone as the input device in your computer's settings. </b>
     ![Step 1](https://github.com/roosaramendis/DRAGON-VOICEMODE/blob/game_overlay/preview_images/step%201.png)
 
-2. Next, select a virtual audio device as the output device in the software. We recommend using VB-Cable as your virtual device, but you can use any virtual audio device.
+<b>2. Next, select a virtual audio device as the output device in the software. We recommend using VB-Cable as your virtual device, but you can use any virtual audio device.</b>
     ![Step 2](https://github.com/roosaramendis/DRAGON-VOICEMODE/blob/game_overlay/preview_images/step%202.png)
 
-3. After that, set your input audio device in Windows settings to the virtual audio device output as your input device. Then you can set other software or games input device as default.
+<b>3. After that, set your input audio device in Windows settings to the virtual audio device output as your input device. Then you can set other software or games input device as default.
 
-*Please keep in mind that if you are using a virtual audio device as the input, you must use Dragon Voice Mode to use your voice. You can change your settings when you are not using Dragon Voice Mode.
+*Please keep in mind that if you are using a virtual audio device as the input, you must use Dragon Voice Mode to use your voice. You can change your settings when you are not using Dragon Voice Mode.</b>
  
 # How to use from code
 
@@ -58,7 +58,8 @@ Setting up Dragon Voice Mode is easy. Follow these steps:
 
 # 2nd you need to build overlay to do that by entering this command.
     pyinstaller --onefile -w 'overlay_main.py'
-<b>* keep in mind every time you modifeing these files(overylay mani.py, overlay dialog.py, overlay py.py) you have to do this step
+<b>Then you will folder called dist in voice mode folder genarated .exe fill will be there and you need to move that in to main folder </b>    
+<b>* keep in mind every time you modifeing these files(overylay mani.py, overlay dialog.py, overlay py.py) you have to do this step</b>
 
 # 3rd step you can run main.py to use program or you can build main.py 
 
@@ -81,4 +82,4 @@ If you want to contribute to the project, please fork the repository and submit 
 
 ### License
 
-The software is released under the [MIT License](https://github.com/roosaramendis/DRAGON-VOICEMODE/blob/voice-changer/LICENSE).
+The software is released under the [MIT License](https://github.com/roosaramendis/DRAGON-VOICEMODE/blob/main/LICENSE).

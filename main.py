@@ -41,7 +41,7 @@ class openoverlay_thread(QtCore.QThread):
                 if self.process_exists(str(i)):
                     isanyapprunning = True
                     if not(self.process_exists(str("overlay_py.exe"))):
-                        overlay_pro = subprocess.Popen([mydir+"/dist/overlay_py.exe"],shell=True)
+                        overlay_pro = subprocess.Popen([mydir+"/overlay_main.exe"],shell=True)
                         print("overlay exect")
                 else:
                     isanyapprunning = False

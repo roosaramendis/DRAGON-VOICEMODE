@@ -84,7 +84,7 @@
   <widget class="QSpinBox" name="soundboardvolume_sb">
    <property name="geometry">
     <rect>
-     <x>360</x>
+     <x>260</x>
      <y>50</y>
      <width>81</width>
      <height>31</height>
@@ -103,7 +103,7 @@
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>480</x>
+     <x>380</x>
      <y>50</y>
      <width>171</width>
      <height>31</height>
@@ -111,6 +111,19 @@
    </property>
    <property name="text">
     <string>sound board volume</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="exit">
+   <property name="geometry">
+    <rect>
+     <x>740</x>
+     <y>10</y>
+     <width>91</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Exit</string>
    </property>
   </widget>
  </widget>

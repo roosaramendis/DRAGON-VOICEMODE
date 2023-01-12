@@ -239,7 +239,7 @@ class Ui_voicemode(object):
             pass
         settingval = QSettings("Dragon Voide Mode","settings vals")
         self.settingval.setValue("loopdelaytime",0.05)
-
+        self.settingval.setValue("mydir",mydir)
         self.centralwidget = QtWidgets.QWidget(voicemode)
         self.centralwidget.setObjectName("centralwidget")
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)

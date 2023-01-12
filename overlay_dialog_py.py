@@ -62,17 +62,19 @@ class Ui_Dialog(object):
         stylesheetstr =stylesheet.readAll()
         Dialog.setStyleSheet(stylesheetstr)
         try:
-            datainfile = pickle.load(open(mydir+"/"+"saves/hotkeys.dvm","rb")) #read data in file
+            self.settingval = QSettings("Dragon Voide Mode","settings vals")
+        except:
+            pass
+        self.mydir = self.settingval.value("mydir")
+        try:
+            datainfile = pickle.load(open(self.mydir+"/"+"saves/hotkeys.dvm","rb")) #read data in file
             print(datainfile)
             hotkeydictinfile = datainfile
             hotkeydict.update(hotkeydictinfile)
             print(hotkeydict)
         except:
             pass
-        try:
-            self.settingval = QSettings("Dragon Voide Mode","settings vals")
-        except:
-            pass
+        
         try:
 
             Dialog.setWindowOpacity(float(self.settingval.value("opacity"))/100)    
@@ -108,7 +110,7 @@ class Ui_Dialog(object):
         self.label.setGeometry(QtCore.QRect(130, 50, 191, 31))
         self.label.setObjectName("label")
         self.soundboardvolume_sb = QtWidgets.QSpinBox(Dialog)
-        self.soundboardvolume_sb.setGeometry(QtCore.QRect(360, 50, 81, 31))
+        self.soundboardvolume_sb.setGeometry(QtCore.QRect(260, 50, 81, 31))
         self.soundboardvolume_sb.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.soundboardvolume_sb.setMaximum(200)
         self.soundboardvolume_sb.setStepType(QtWidgets.QAbstractSpinBox.AdaptiveDecimalStepType)
@@ -116,8 +118,13 @@ class Ui_Dialog(object):
         self.soundboardvolume_sb.setValue(int(self.settingval.value("soundboardvolume")))
         self.soundboardvolume_sb.valueChanged.connect(self.setsoundboardvolume)
         
+        self.exit = QtWidgets.QPushButton(Dialog)
+        self.exit.setObjectName(u"exit")
+        self.exit.setGeometry(QtCore.QRect(740, 10, 91, 91))
+        self.exit.clicked.connect(self.exit_button_clicked)
+
         self.opacity_sb = QtWidgets.QSpinBox(Dialog)
-        self.opacity_sb.setGeometry(QtCore.QRect(640, 50, 81, 31))
+        self.opacity_sb.setGeometry(QtCore.QRect(540, 50, 81, 31))
         self.opacity_sb.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.opacity_sb.setMaximum(200)
         self.opacity_sb.setStepType(QtWidgets.QAbstractSpinBox.AdaptiveDecimalStepType)
@@ -129,17 +136,17 @@ class Ui_Dialog(object):
         self.opacity_sb.valueChanged.connect(self.set_opacity)
 
         self.label_2 = QtWidgets.QLabel(Dialog)
-        self.label_2.setGeometry(QtCore.QRect(480, 50, 150, 31))
+        self.label_2.setGeometry(QtCore.QRect(380, 50, 150, 31))
         self.label_2.setObjectName("label_2")
         self.label_3 = QtWidgets.QLabel(Dialog)
-        self.label_3.setGeometry(QtCore.QRect(730, 50, 150, 31))
+        self.label_3.setGeometry(QtCore.QRect(630, 50, 100, 31))
         self.label_3.setObjectName("label_3")
         if len(hotkeydict.keys()) != 0:
             self.settableview(hotkeydict)
         self.retranslateUi(Dialog)
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
-
+        
     def settableview(self,dic):
         global tablemodel
         try:
@@ -164,6 +171,9 @@ class Ui_Dialog(object):
         
         #Dialog.setWindowOpacity(float(self.settingval.value("opacity"))/100)
 
+    def exit_button_clicked(self):
+        self.close()
+
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
@@ -172,7 +182,7 @@ class Ui_Dialog(object):
         self.label.setText(_translate("Dialog", "hear my self volume"))
         self.label_2.setText(_translate("Dialog", "sound board volume"))
         self.label_3.setText(_translate("Dialog", "opatcity"))
-
+        self.exit.setText(_translate("Dialog", u"Exit", None))
 
 if __name__ == "__main__":
     import sys
