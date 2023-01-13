@@ -23,7 +23,7 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(640, 480)
-        self.settingval = QSettings("Dragon Voide Mode","settings vals")
+        self.settingval = QSettings("DragonVoiceMode","settings vals")
         self.enablenitify = QtWidgets.QCheckBox(Dialog)
         self.enablenitify.setGeometry(QtCore.QRect(40, 40, 341, 17))
         self.enablenitify.setObjectName("enablenitify")
@@ -52,6 +52,10 @@ class Ui_Dialog(object):
         self.removeselcetedapp.setObjectName(u"removeselcetedapp")
         self.removeselcetedapp.setGeometry(QtCore.QRect(490, 360, 111, 23))
         self.removeselcetedapp.clicked.connect(self.removeselected_clk)
+        self.refresh = QtWidgets.QPushButton(Dialog)
+        self.refresh.setObjectName(u"refresh")
+        self.refresh.setGeometry(QtCore.QRect(40, 360, 75, 23))
+        self.refresh.clicked.connect(self.refresh_clk)
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
@@ -111,7 +115,11 @@ class Ui_Dialog(object):
         pickle.dump((datainfile),open(path+"/overlayapps"+".dvm","wb"))
         print("saving to "+str(path))   
         self.showlist()
-                          
+
+    def refresh_clk(self):
+        self.showlist()
+
+
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
@@ -122,6 +130,7 @@ class Ui_Dialog(object):
         self.add_overlay_programs.setText(_translate("Dialog", u"Add OverLay Programs", None))
         self.label.setText(_translate("Dialog", u"....................................................Overlay enabled programs....................................................", None))
         self.removeselcetedapp.setText(_translate("Dialog", u"Remove Selected", None))
+        self.refresh.setText(_translate("Dialog", u"Refresh", None))
 
 
 if __name__ == "__main__":

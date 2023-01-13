@@ -44,6 +44,7 @@ class Ui_addprogramsforoverlay(object):
     def showlistview(self):
         global model
         model = QtGui.QStandardItemModel()
+        self.modelfiltered = QtGui.QStandardItemModel()
         for i in detect_running_apps.processlist().getprocess():
             print(i)
             item = QtGui.QStandardItem(i)
@@ -66,8 +67,12 @@ class Ui_addprogramsforoverlay(object):
             pass    
 
         print(str(self.listView.selectedIndexes()))
-        print(model.itemFromIndex(self.listView.selectedIndexes()[0]).text())
-        selecteditem = model.itemFromIndex(self.listView.selectedIndexes()[0]).text()
+        try:
+            print(model.itemFromIndex(self.listView.selectedIndexes()[0]).text())
+            selecteditem = model.itemFromIndex(self.listView.selectedIndexes()[0]).text()
+        except:    
+            #selecteditem = self.modelfiltered.item(self.listView.selectedIndexes()[0].row()).text()
+            selecteditem = model.itemFromIndex(self.modelfiltered.mapToSource(self.listView.selectedIndexes()[0])).text()
         overlayapplist.append(str(selecteditem))
         
         path =  mydir+"/saves"
@@ -85,8 +90,10 @@ class Ui_addprogramsforoverlay(object):
         self.filteredapps.setSourceModel(model)
         self.filteredapps.setFilterCaseSensitivity(QtCore.Qt.CaseInsensitive)
         self.filteredapps.setFilterRegExp(searchstr)
-        self.listView.setModel(self.filteredapps)
-
+        #self.filteredapps.mapToSource(self.listView.selectedIndexes()[0])
+        self.modelfiltered = self.filteredapps
+        #self.listView.setModel(self.filteredapps)
+        self.listView.setModel(self.modelfiltered)
 
     def retranslateUi(self, addprogramsforoverlay):
         _translate = QtCore.QCoreApplication.translate

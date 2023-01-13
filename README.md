@@ -57,7 +57,7 @@ Setting up Dragon Voice Mode is easy. Follow these steps:
 
 <b>3. After that, set your input audio device in Windows settings to the virtual audio device output as your input device. Then you can set other software or games input device as default.
 
-*Please keep in mind that if you are using a virtual audio device as the input, you must use Dragon Voice Mode to use your voice. You can change your settings when you are not using Dragon Voice Mode.</b>
+*Please keep in mind that if you are using a virtual audio device as the input, you must use Dragon Voice Mode to use your voice. You can change your settings when you are not using DragonVoiceMode.</b>
  
 # How to use from code
 
@@ -77,9 +77,6 @@ Setting up Dragon Voice Mode is easy. Follow these steps:
     some improvements 
     add voice changer
 
-# known issues
-
-    issue with hotkeys.it will show wierd number when you use hot keys with ctrl+alt or if you using none alperbet key with ctrl
 
 ### Support
 

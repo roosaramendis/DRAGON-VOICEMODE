@@ -121,7 +121,7 @@ class capturehk_thread(QtCore.QThread):
     def __init__(self, parent=None):
         super(capturehk_thread,self).__init__(parent)
     def run(self):
-        self.settingval = QSettings("Dragon Voide Mode","settings vals")
+        self.settingval = QSettings("DragonVoiceMode","settings vals")
         
            
         while True:
@@ -180,7 +180,7 @@ class hearituself_thread(QtCore.QThread):
     def run(self):
         
         while True:
-            settingval = QSettings("Dragon Voide Mode","settings vals")
+            settingval = QSettings("DragonVoiceMode","settings vals")
             time.sleep(float(settingval.value("loopdelaytime")))#0.5
             #print(str(audio.getisaudioplaying())+" in while")
             if audio.playaudio_class().getisaudioplaying() == True:
@@ -237,7 +237,7 @@ class Ui_voicemode(object):
             print(hotkeydict)
         except:
             pass
-        settingval = QSettings("Dragon Voide Mode","settings vals")
+        settingval = QSettings("DragonVoiceMode","settings vals")
         self.settingval.setValue("loopdelaytime",0.05)
         self.settingval.setValue("mydir",mydir)
         self.centralwidget = QtWidgets.QWidget(voicemode)
@@ -541,7 +541,7 @@ class Ui_voicemode(object):
 
     def hearituself(self):
         if overridehearuselfdevice[0] == 2:
-            self.settingval = QSettings("Dragon Voide Mode","settings vals")
+            self.settingval = QSettings("DragonVoiceMode","settings vals")
             if (self.settingval.value("enable notify")== 2):
                 self.thread3.notififunc.connect(self.notificationsys)
             self.thread3 = hearituself_thread(selectedinputdevice=deviceslist.index(sd.query_devices(kind='input')['name']),selectedoutputdevice=deviceslist.index(hearmyselfdevice[0]),volume=self.horizontalSlider.value())
@@ -574,7 +574,7 @@ class Ui_voicemode(object):
         self.thread1.start()
 
     def makesettingvals(self):
-        self.settingval = QSettings("Dragon Voide Mode","settings vals")
+        self.settingval = QSettings("DragonVoiceMode","settings vals")
 
     def setdefsettingvals(self):
         settingkeylist = self.settingval.allKeys()
@@ -617,7 +617,7 @@ class Ui_voicemode(object):
             self.settingval.setValue("opacity",80)
 
     def getsettingvals(self):
-        self.settingval = QSettings("Dragon Voide Mode","settings vals")
+        self.settingval = QSettings("DragonVoiceMode","settings vals")
         audiofiledir[0] = str(self.settingval.value("audio path"))
         selectedoutputdevicetext[0] = self.settingval.value("selectedoutputdevicetext")
         selectedinputdevicetext[0] = self.settingval.value("selectedinputdevicetext")
@@ -631,7 +631,7 @@ class Ui_voicemode(object):
         pitchshift[0] = self.settingval.value("pitchshift")
 
     def setsettingvals(self):
-        self.settingval = QSettings("Dragon Voide Mode","settings vals")
+        self.settingval = QSettings("DragonVoiceMode","settings vals")
         self.settingval.setValue("selectedoutputdevicetext",selectedoutputdevicetext[0])
         self.settingval.setValue("selectedinputdevicetext",selectedinputdevicetext[0])
 

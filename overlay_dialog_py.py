@@ -62,7 +62,7 @@ class Ui_Dialog(object):
         stylesheetstr =stylesheet.readAll()
         Dialog.setStyleSheet(stylesheetstr)
         try:
-            self.settingval = QSettings("Dragon Voide Mode","settings vals")
+            self.settingval = QSettings("DragonVoiceMode","settings vals")
         except:
             pass
         self.mydir = self.settingval.value("mydir")

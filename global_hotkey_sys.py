@@ -76,7 +76,7 @@ class globalhotkeysys(object):
 
         def on_release(key):
             print('{0} release'.format(key))
-            #settingval = QSettings("Dragon Voide Mode","settings vals")
+            #settingval = QSettings("DragonVoiceMode","settings vals")
             self.on_releasetimes[0] += 1
             print(str(self.currentkey)+"onreleasss")
               

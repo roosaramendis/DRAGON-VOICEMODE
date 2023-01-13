@@ -41,7 +41,7 @@ class getaudiostats_thread(QtCore.QThread):
     def __init__(self, parent=None):
         super(getaudiostats_thread,self).__init__(parent)
     def run(self):
-        self.settingval = QSettings("Dragon Voide Mode","settings vals")
+        self.settingval = QSettings("DragonVoiceMode","settings vals")
         while True:
             time.sleep(0.02)
             self.audiostat.emit(str(self.settingval.value("audio_stat")))
@@ -68,7 +68,7 @@ class Ui_overlay(object):
         self.stats.setAttribute(Qt.WA_TranslucentBackground,True)
         print("Width =", self.w)
         print("Height =", self.h)
-        self.settingval = QSettings("Dragon Voide Mode","settings vals")
+        self.settingval = QSettings("DragonVoiceMode","settings vals")
         self.settingval.setValue("audio_stat","Idle")
         print("overlaystarted")
         self.stats.setText(str(self.settingval.value("audio_stat")))

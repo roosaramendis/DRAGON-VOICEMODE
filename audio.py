@@ -86,5 +86,5 @@ def stopplaying():
     voice_mode_ui.setisaudioplaying(False)
     globle_key_listener.itwasdone(True)
     duration[0] = 0
-    settingval = QSettings("Dragon Voide Mode","settings vals")
+    settingval = QSettings("DragonVoiceMode","settings vals")
     settingval.setValue("audio_stat","Idle")

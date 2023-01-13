@@ -54,10 +54,10 @@ def itwasdone(doneornot):
                 pressedkeystr = pressedkey[0].replace("'","")
             afilename = hotkeydict[pressedkeystr]
             #print(volume)
-            settingval = QSettings("Dragon Voide Mode","settings vals")
+            settingval = QSettings("DragonVoiceMode","settings vals")
             volume = settingval.value("soundboardvolume")/100
             print(volume)
-            settingval = QSettings("Dragon Voide Mode","settings vals")
+            settingval = QSettings("DragonVoiceMode","settings vals")
             settingval.setValue("audio_stat","Playing")
             audio.playaudio_class().playaudio(filename=afilename,deviceindex=selecteddiviceinderx,chunksize=1024,volume=volume)
         else:
@@ -133,7 +133,7 @@ def itwasdone(doneornot):
     def on_release(key):
         print('{0} release'.format(
             key))
-        #settingval = QSettings("Dragon Voide Mode","settings vals")
+        #settingval = QSettings("DragonVoiceMode","settings vals")
         on_releasetimes[0] += 1
         print(str(currentkey)+"onreleasss")
         if len(currentkey) >1:
@@ -174,10 +174,10 @@ def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
             pressedkeystr = pressedkey   
             afilename = hotkeydict[pressedkeystr]
             #print(volume)
-            settingval = QSettings("Dragon Voide Mode","settings vals")
+            settingval = QSettings("DragonVoiceMode","settings vals")
             volume = settingval.value("soundboardvolume")/100
             print(volume)
-            settingval = QSettings("Dragon Voide Mode","settings vals")
+            settingval = QSettings("DragonVoiceMode","settings vals")
             settingval.setValue("audio_stat","Playing")
             audio.playaudio_class().playaudio(filename=afilename,deviceindex=selecteddiviceinderx,chunksize=1024,volume=volume)
         else:
@@ -192,7 +192,7 @@ def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
 '''def starcapture_hk_old():
     
     def setstophk(hkey):
-        settingval = QSettings("Dragon Voide Mode","settings vals")
+        settingval = QSettings("DragonVoiceMode","settings vals")
         if len(hkey)>2:
             captrdkey = hkey[0]+"+"+hkey[1]+"+"+hkey[2]
         elif len(hkey)>1:
@@ -266,7 +266,7 @@ def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
     def on_release(key):
         print('{0} release'.format(
             key))
-        settingval = QSettings("Dragon Voide Mode","settings vals")
+        settingval = QSettings("DragonVoiceMode","settings vals")
         on_releasetimes[0] += 1
         print(str(currentkey1)+"onreleasss11")
         currentreleaskey1.append(str(key))
@@ -297,7 +297,7 @@ def starlistener(hotkeydict,selecteddiviceinderx,volume=1):
 def starcapture_hk():
     
     def setstophk(hkey):
-        settingval = QSettings("Dragon Voide Mode","settings vals")
+        settingval = QSettings("DragonVoiceMode","settings vals")
         if len(hkey)>2:
             captrdkey = hkey[0]+"+"+hkey[1]+"+"+hkey[2]
         elif len(hkey)>1:
@@ -314,7 +314,7 @@ def starcapture_hk():
 '''def starlistenerforstopaudio_old():
     
     def stopaudio_call(hkey):
-        settingval = QSettings("Dragon Voide Mode","settings vals")
+        settingval = QSettings("DragonVoiceMode","settings vals")
         if len(hkey)>2:
             captrdkey = hkey[0]+"+"+hkey[1]+"+"+hkey[2].replace("'","")
         elif len(hkey)>1:
@@ -401,7 +401,7 @@ def starcapture_hk():
     def on_release(key):
         print('{0} release'.format(
             key))
-        settingval = QSettings("Dragon Voide Mode","settings vals")
+        settingval = QSettings("DragonVoiceMode","settings vals")
         on_releasetimes[0] += 1
         print(str(currentkey_sa)+"onreleasss")
         currentreleaskey_sa.append(str(key))
@@ -432,7 +432,7 @@ def starcapture_hk():
 def starlistenerforstopaudio():
     
     def stopaudio_call(hkey):
-        settingval = QSettings("Dragon Voide Mode","settings vals")
+        settingval = QSettings("DragonVoiceMode","settings vals")
         '''if len(hkey)>2:
             captrdkey = hkey[0]+"+"+hkey[1]+"+"+hkey[2].replace("'","")
         elif len(hkey)>1:

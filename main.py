@@ -33,14 +33,14 @@ class openoverlay_thread(QtCore.QThread):
             
             for i in datainfile:
                 try:
-                    settingval = QSettings("Dragon Voide Mode","settings vals")
+                    settingval = QSettings("DragonVoiceMode","settings vals")
                     time.sleep(float(settingval.value("loopdelaytime")))
                 except:
                     pass    
                 print("datainfile"+str(datainfile))
-                if self.process_exists(str(i)):
+                if self.process_exists(str(i)) and (settingval.value("overlay enable") == 2):
                     isanyapprunning = True
-                    if not(self.process_exists(str("overlay_py.exe"))):
+                    if not(self.process_exists(str("overlay_main.exe"))):
                         overlay_pro = subprocess.Popen([mydir+"/overlay_main.exe"],shell=True)
                         print("overlay exect")
                 else:

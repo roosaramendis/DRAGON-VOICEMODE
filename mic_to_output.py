@@ -38,7 +38,7 @@ selectedinputdevicetext = ['']
 
 def getsettingvals():
     global settingval
-    settingval = QSettings("Dragon Voide Mode","settings vals")
+    settingval = QSettings("DragonVoiceMode","settings vals")
     
     selectedoutputdevicetext[0] = settingval.value("selectedoutputdevicetext")
     selectedinputdevicetext[0] = settingval.value("selectedinputdevicetext")
@@ -91,7 +91,7 @@ def startmictooutputforhearaudio(inputdeviceindex,outputdeviceindex,volume):
     def callback(indata, outdata, frames, time, status):
         if status:
             print(status+" stats")
-        settingval = QSettings("Dragon Voide Mode","settings vals")    
+        settingval = QSettings("DragonVoiceMode","settings vals")    
         outdata[:] = (indata) * settingval.value("hearmyselfvolume")/100
   
     print("mic input stated")
@@ -106,7 +106,7 @@ def startmictooutputforhearaudio(inputdeviceindex,outputdeviceindex,volume):
         print('#' * 80)'''
         #input()
         while sd.Stream.active:
-            settingval = QSettings("Dragon Voide Mode","settings vals")
+            settingval = QSettings("DragonVoiceMode","settings vals")
             time.sleep(float(settingval.value("loopdelaytime")))
             if audio.playaudio_class().getisaudioplaying() == False:
                 print("stopthis shit")
@@ -186,7 +186,7 @@ def startmictooutput(inputdeviceindex,outputdeviceindex):
                     channels=args.channels, callback=callback):
 
         while sd.Stream.active:
-            settingval = QSettings("Dragon Voide Mode","settings vals")
+            settingval = QSettings("DragonVoiceMode","settings vals")
             time.sleep(float(settingval.value("loopdelaytime")))
                
 
