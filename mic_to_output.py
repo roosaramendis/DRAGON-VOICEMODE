@@ -150,8 +150,7 @@ def startmictooutput(inputdeviceindex,outputdeviceindex):
     parser.add_argument('--blocksize', type=int, help='block size')
     parser.add_argument('--latency', type=float, help='latency in seconds')
     args = parser.parse_args(remaining)
-
-
+    
     def pitchchange(data,pitch):
         
         shift = pitch//100
@@ -166,18 +165,20 @@ def startmictooutput(inputdeviceindex,outputdeviceindex):
         return sh_chunk.astype(data.dtype)
 
     def callback(indata, outdata, frames, time, status):
+        settingval = QSettings("DragonVoiceMode","settings vals")
         if status:
             print(status)
         if voicechanger == False:    
             outdata[:] = indata
+            
         elif voicechanger == True:
             getsettingvals()
             if pitchshift[0] == 2:
                 print("pitchshit enable")    
                 outdata[:] = (pitchchange(indata,pitch[0]))*pitchvolume[0]
-            elif pitchshift[0] == 0:
+            elif pitchshift[0] == 0 and (settingval.value("audio_stat") == "Idle"):
                 outdata[:] = indata
-    
+                
     print("mic input stated")
     print(str(inputdeviceindex)+str(outputdeviceindex))
     with sd.Stream(device=(inputdeviceindex, outputdeviceindex),
